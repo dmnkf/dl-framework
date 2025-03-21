@@ -15,8 +15,8 @@ This repository provides a modular deep-learning pipeline for ECG and CMR repres
 2. **Setup Project**
    ```bash
    # Clone repository
-   git clone https://github.com/your-username/your-repo.git
-   cd projection
+   git clone https://github.com/IPOLE-BAT-CMR-ECG/dl-framework
+   cd dl-framework
 
    # Install dependencies
    rye sync --no-lock
