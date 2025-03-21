@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dominik Filliger &amp; Noah Leuenberger">
+<meta name="dcterms.date" content="2025-02-06">
+
+<title>2&nbsp; Dataset - Automated Cardiac Diagnosis Challenge (ACDC)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./dataset_ecg_arrhythmia.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./dataset_cmr_acdc.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Dataset - Automated Cardiac Diagnosis Challenge (ACDC)</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+        <div class="sidebar-tools-collapse">
+    <a href="https://gitlab.fhnw.ch/ipole-bat/projection.git" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
+    <a href="./quarto_book.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+</div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">A General Overview of Techniques and Visualizations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dataset_cmr_acdc.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Dataset - Automated Cardiac Diagnosis Challenge (ACDC)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dataset_ecg_arrhythmia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dataset - 12-lead ECG for Arrhythmia Study</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phase1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Evaluation 1: Embedding Space Analysis (Pre-trained vs Fine-tuned)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phase2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Evaluation 2: Subcluster Analysis within Single-Label Groups</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phase3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Phase 3 - Cross-Domain Notebook</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#study-population" id="toc-study-population" class="nav-link active" data-scroll-target="#study-population">Study Population</a></li>
+  <li><a href="#involved-systems" id="toc-involved-systems" class="nav-link" data-scroll-target="#involved-systems">Involved Systems</a></li>
+  <li><a href="#loading-the-cmr-dataset" id="toc-loading-the-cmr-dataset" class="nav-link" data-scroll-target="#loading-the-cmr-dataset">Loading the CMR Dataset</a></li>
+  <li><a href="#visualizing-key-cardiac-frames" id="toc-visualizing-key-cardiac-frames" class="nav-link" data-scroll-target="#visualizing-key-cardiac-frames">Visualizing Key Cardiac Frames</a></li>
+  <li><a href="#visualizing-the-sequence-of-frames" id="toc-visualizing-the-sequence-of-frames" class="nav-link" data-scroll-target="#visualizing-the-sequence-of-frames">Visualizing the Sequence of Frames</a></li>
+  <li><a href="#animated-visualization" id="toc-animated-visualization" class="nav-link" data-scroll-target="#animated-visualization">Animated Visualization</a></li>
+  <li><a href="#cropping-based-on-turgut-biobank" id="toc-cropping-based-on-turgut-biobank" class="nav-link" data-scroll-target="#cropping-based-on-turgut-biobank">Cropping based on Turgut Biobank</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Dataset - Automated Cardiac Diagnosis Challenge (ACDC)</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dominik Filliger &amp; Noah Leuenberger </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 6, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The <a href="https://www.creatis.insa-lyon.fr/Challenge/acdc/databases.html">ACDC dataset</a> is part of the Automated Cardiac Diagnosis Challenge, which provides comprehensive MRI data for studying cardiac function across several patient groups.</p>
+<p>The ACDC dataset was created from real clinical exams acquired at the <a href="https://www.chu-dijon.fr/">University Hospital of Dijon</a>, France. The data is fully anonymized and complies with the local ethical regulations set by the hospital’s ethical committee. The dataset captures several well-defined pathologies and provides enough cases to properly train machine learning models, as well as assess variations in key physiological parameters obtained from cine-MRI, such as <strong>diastolic volume</strong> and <strong>ejection fraction</strong>.</p>
+<p>The dataset is composed of <strong>150 exams</strong> (each from a different patient) divided into <strong>five evenly distributed subgroups</strong> (four pathological groups and one healthy subject group). Each patient record also contains additional metadata like <strong>weight, height</strong>, and details regarding the <strong>diastolic and systolic phases</strong>.</p>
+<section id="study-population" class="level3">
+<h3 class="anchored" data-anchor-id="study-population">Study Population</h3>
+<p>The dataset includes <strong>150 patients</strong>, categorized into the following five subgroups:</p>
+<ol type="1">
+<li><strong>Normal subjects (NOR)</strong> - 30 patients without known pathologies.</li>
+<li><strong>Myocardial Infarction (MINF)</strong> - 30 patients with left ventricular ejection fraction below 40% and abnormal contraction in several myocardial segments.</li>
+<li><strong>Dilated Cardiomyopathy (DCM)</strong> - 30 patients with an enlarged left ventricular volume (&gt;100 mL/m²) and reduced ejection fraction (below 40%).</li>
+<li><strong>Hypertrophic Cardiomyopathy (HCM)</strong> - 30 patients with increased left ventricular mass (&gt;110 g/m²), thickened myocardial segments (&gt;15 mm in diastole), but with normal ejection fraction.</li>
+<li><strong>Abnormal Right Ventricle (RV)</strong> - 30 patients with either enlarged right ventricular volume (&gt;110 mL/m²) or an ejection fraction of the right ventricle lower than 40%.</li>
+</ol>
+<p>The groups are defined based on physiological parameters, such as <strong>ventricular volumes</strong>, <strong>ejection fractions</strong>, <strong>local contractions</strong>, <strong>LV mass</strong>, and the <strong>maximum thickness</strong> of the myocardium. The classification rules can be found in more detail in the relevant tab.</p>
+</section>
+<section id="involved-systems" class="level3">
+<h3 class="anchored" data-anchor-id="involved-systems">Involved Systems</h3>
+<p>The MRI acquisitions were conducted over a six-year period using <strong>two MRI scanners</strong> with different magnetic field strengths:</p>
+<ul>
+<li><strong>1.5 T (Siemens Area, Siemens Medical Solutions, Germany)</strong></li>
+<li><strong>3.0 T (Siemens Trio Tim, Siemens Medical Solutions, Germany)</strong></li>
+</ul>
+<p>Images were acquired in a <strong>short-axis orientation</strong>, covering the left ventricle from base to apex, with slice thicknesses of either <strong>5 mm</strong> or <strong>8 mm</strong>. The <strong>spatial resolution</strong> ranges between <strong>1.37 to 1.68 mm²/pixel</strong>, and <strong>28 to 40 images</strong> were taken to capture the complete or nearly complete cardiac cycle.</p>
+<p>O. Bernard, A. Lalande, C. Zotti, F. Cervenansky, et al.<br>
+“Deep Learning Techniques for Automatic MRI Cardiac Multi-structures Segmentation and Diagnosis: Is the Problem Solved?”<br>
+IEEE Transactions on Medical Imaging, vol.&nbsp;37, no. 11, pp.&nbsp;2514-2525, Nov.&nbsp;2018.<br>
+doi: 10.1109/TMI.2018.2837502</p>
+</section>
+<section id="loading-the-cmr-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="loading-the-cmr-dataset">Loading the CMR Dataset</h2>
+<div id="0f675d9a" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>project_root <span class="op">=</span> <span class="bu">str</span>(Path().absolute().parent.parent)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>sys.path.append(project_root)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># unified dataset</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.unified <span class="im">import</span> UnifiedDataset</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.dataset <span class="im">import</span> DatasetModality</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.visualization.cmr_viz <span class="im">import</span> plot_processed_sample, plot_raw_sample, create_cardiac_cycle_animation</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>data_root <span class="op">=</span> Path(project_root) <span class="op">/</span> <span class="st">"data"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Let’s explore the ACDC dataset and take a closer look at its content.</p>
+<div id="3ecd02c0" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>acdc_data <span class="op">=</span> UnifiedDataset(data_root, modality<span class="op">=</span>DatasetModality.CMR, dataset_key<span class="op">=</span><span class="st">"acdc"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>acdc_data <span class="op">=</span> acdc_data.raw_dataset</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Load first patient data</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>patient_record <span class="op">=</span> acdc_data.load_record(<span class="st">"patient001"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create patient data dictionary with all available metadata</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>patient_data <span class="op">=</span> {</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data"</span>: patient_record.data,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"id"</span>: patient_record.<span class="bu">id</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"group"</span>: patient_record.target_labels,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ed_frame_idx"</span>: patient_record.metadata[<span class="st">"ed_frame_idx"</span>],</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mid_frame_idx"</span>: patient_record.metadata[<span class="st">"mid_frame_idx"</span>],</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"es_frame_idx"</span>: patient_record.metadata[<span class="st">"es_frame_idx"</span>]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Print metadata</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Patient Metadata:"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> key, value <span class="kw">in</span> patient_record.metadata.items():</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>value<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Patient Metadata:
+ed_frame: 1
+es_frame: 12
+height: 184.0
+weight: 95.0
+nb_frames: 30
+ed_frame_idx: 0
+mid_frame_idx: 5
+es_frame_idx: 11
+nifti_path: training/patient001/patient001_4d.nii.gz</code></pre>
+</div>
+</div>
+<p>The dataset includes cardiac MRI data from multiple patients, each accompanied by relevant metadata. Here, we are focusing on one patient to get started.</p>
+</section>
+<section id="visualizing-key-cardiac-frames" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-key-cardiac-frames">Visualizing Key Cardiac Frames</h2>
+<p>We begin by examining the three key frames in the cardiac cycle: End-Diastolic (ED), Mid-Phase, and End-Systolic (ES).</p>
+<div id="cell-fig-key-frames" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>fig1 <span class="op">=</span> plot_processed_sample(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>patient_data[<span class="st">"data"</span>],</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="ss">f'Patient </span><span class="sc">{</span>patient_data[<span class="st">"id"</span>]<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>patient_data[<span class="st">"group"</span>]<span class="sc">}</span><span class="ss">'</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-key-frames" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-key-frames-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="dataset_cmr_acdc_files/figure-html/fig-key-frames-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;2.1: Key cardiac frames showing ED, Mid-Phase, and ES states."><img src="dataset_cmr_acdc_files/figure-html/fig-key-frames-output-1.png" width="1430" height="651" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-key-frames-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.1: Key cardiac frames showing ED, Mid-Phase, and ES states.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The visualization in <a href="#fig-key-frames" class="quarto-xref">Figure&nbsp;<span>2.1</span></a> shows the heart’s state at three critical phases. These states provide important snapshots of the heart’s activity, giving insights into its pumping function.</p>
+</section>
+<section id="visualizing-the-sequence-of-frames" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-the-sequence-of-frames">Visualizing the Sequence of Frames</h2>
+<p>Since our data contains only three frames (ED, Mid-Phase, and ES), we can visualize them sequentially to observe the changes.</p>
+<div id="cell-fig-sequence" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fig2 <span class="op">=</span> plot_raw_sample(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>acdc_data._read_nifti(acdc_data.paths[<span class="st">"raw"</span>] <span class="op">/</span> patient_record.metadata[<span class="st">'nifti_path'</span>]),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    frame_indices<span class="op">=</span>[</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        patient_record.metadata[<span class="st">"ed_frame_idx"</span>],</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        patient_record.metadata[<span class="st">"mid_frame_idx"</span>],</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        patient_record.metadata[<span class="st">"es_frame_idx"</span>]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="ss">f'Patient </span><span class="sc">{</span>patient_data[<span class="st">"id"</span>]<span class="sc">}</span><span class="ss"> - Cardiac Phases'</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-sequence" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sequence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="dataset_cmr_acdc_files/figure-html/fig-sequence-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2.2: Sequential visualization of cardiac phases"><img src="dataset_cmr_acdc_files/figure-html/fig-sequence-output-1.png" width="1430" height="651" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sequence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.2: Sequential visualization of cardiac phases
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This sequence shown in <a href="#fig-sequence" class="quarto-xref">Figure&nbsp;<span>2.2</span></a> represents the heart’s movement through the key phases. Observing these frames in order reveals the changing shape and size of the heart chambers, which is vital for understanding cardiac function.</p>
+</section>
+<section id="animated-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="animated-visualization">Animated Visualization</h2>
+<p>For an even clearer picture of how the heart changes across these phases, let’s create an animated version.</p>
+<div id="cell-fig-animation" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display, HTML</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> create_cardiac_cycle_animation(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>acdc_data._read_nifti(acdc_data.paths[<span class="st">"raw"</span>] <span class="op">/</span> patient_record.metadata[<span class="st">'nifti_path'</span>]),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    frame_indices<span class="op">=</span>[</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        patient_record.metadata[<span class="st">"ed_frame_idx"</span>],</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        patient_record.metadata[<span class="st">"mid_frame_idx"</span>],</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        patient_record.metadata[<span class="st">"es_frame_idx"</span>]</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>display(HTML(html))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div id="fig-animation" class="cell-output cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-animation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="data:image/gif;base64,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12mrvXayYm+V89lJrz033WqXzXTcSNe9N999g5x3zX4LPjjh5wLeceGJK754fYcjzjjkkUv+kuMcT3455pBXXnDmnXvu9+YEfz466WmHnm7pqasO9+nMrv467Ai37nrstds+8+yq3r4774fmrnvvwQvf+O+KDn888o4VvzzzzTv/PPTRSz899dVbfz322Wu/Pffde/89+OGLPz755Zt/Pvrpq78+++27/z788cs/P/P99dt/P/75678///37/z8AAyjAARKwgAY8IAITqMAFMrCBDnwgBCMowQlSsIIWvCAGM6jBDXKwgx78IAhDKMIRkrCEJjwhClOowhWysIUufCEMYyjDGdKwhja8IQ5zqMMd8rCHPvwhEIMoxCESsYhGPCISk6jEJTKxiU58IhSjKMUpUrGKVrwiFrOoxS1ysYte/CIYwyjGMZKxjGY8IxrTqMY1srGNbnwjHOMoxznSsY52vCMe86jHPfKxj378IyADKchBErKQhjwkIhOpyEUyspGOfCQkIynJSVKykpa8JCYzqclNcrKTnvwkKEMpylG6MSAAIfkEATIAFQAsAAAAAOAB4AGD/v7+BQUFFRUVJiYmNzc3RkZGVFRUZWVlnJycubm529vbx8fHeXl5p6enh4eH6OjoCP8AAQgcSLCgwYMIEypcyLChw4cQI0qcSLGixYsYM2rcyLGjx48gQ4ocSbKkyZMoU6pcybKly5cwY8qcSbOmzZs4c+rcybOnz59AgwodSrSo0aNIkypdyrSp06dQo0qdSrWq1atYs2rdyrWr169gw4odS7as2bNo06pdy7at27dw48qdS7eu3bt48+rdy7ev37+AAwseTLiw4cOIEytezLix48eQI0ueTLmy5cuYM2vezLmz58+gQ4seTbq06dOoU6tezbq169ewY8ueTbu27du4c+vezbu379/AgwsfTry48ePIkytfzry58+fQo0ufTr269esaEQQIoIDggu0JABj/EIBQe/eDFdJXGHDggUAGAbDLF6g9AAOCB8ADULCgPHeEARyQHgICDPBefPNhp50BBg4UYADhKWQegPcJ1EAFDQAAX4IKQhhAfwA04GF44w2kQAEBCHDAhAfZZ2IFDmjIHYoCxDgQAwOkWMB5ADwwno7uvZfjADZySJt5BBwgUAEGJACheOQJNIAACCRQgAD/tVghAAlUgICMRCaQ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" alt="Cardiac Cycle GIF" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-animation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.3: Animated visualization of cardiac cycle
+</figcaption>
+</figure>
+</div>
+</div>
+<p>The animated GIF in <a href="#fig-animation" class="quarto-xref">Figure&nbsp;<span>2.3</span></a> shows the heart transitioning through the ED, Mid-Phase, and ES frames, providing a clear and intuitive representation of its movement. This animation is especially helpful for understanding the coordinated action of different heart regions as they expand and contract.</p>
+</section>
+<section id="cropping-based-on-turgut-biobank" class="level2">
+<h2 class="anchored" data-anchor-id="cropping-based-on-turgut-biobank">Cropping based on Turgut Biobank</h2>
+<p>The Turgut Biobank paper implements a custom manual cropping strategy with hard-coded values designed for their specific dataset. While this approach provides a standardized way to focus on cardiac regions, these fixed parameters may not be optimal for our ACDC dataset due to potential differences in image acquisition, patient positioning, and cardiac anatomical variations. Let’s implement and evaluate this cropping approach across our key cardiac frames.</p>
+<div id="cell-fig-cropping" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apply_turgut_crop(image, img_size):</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Apply Turgut Biobank cropping parameters to numpy array"""</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    top <span class="op">=</span> <span class="bu">int</span>(<span class="fl">0.21</span> <span class="op">*</span> img_size)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    left <span class="op">=</span> <span class="bu">int</span>(<span class="fl">0.325</span> <span class="op">*</span> img_size)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    height <span class="op">=</span> width <span class="op">=</span> <span class="bu">int</span>(<span class="fl">0.375</span> <span class="op">*</span> img_size)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensure the image is large enough for cropping</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> image.shape[<span class="dv">0</span>] <span class="op">&lt;</span> top <span class="op">+</span> height <span class="kw">or</span> image.shape[<span class="dv">1</span>] <span class="op">&lt;</span> left <span class="op">+</span> width:</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Image too small for specified crop dimensions"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> image[top:top<span class="op">+</span>height, left:left<span class="op">+</span>width]</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize_image(img):</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Normalize image to 0-1 range"""</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (img <span class="op">-</span> img.<span class="bu">min</span>()) <span class="op">/</span> (img.<span class="bu">max</span>() <span class="op">-</span> img.<span class="bu">min</span>())</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the NIFTI data and relevant frames</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>original_data <span class="op">=</span> acdc_data._read_nifti(acdc_data.paths[<span class="st">"raw"</span>] <span class="op">/</span> patient_record.metadata[<span class="st">'nifti_path'</span>])</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>frames <span class="op">=</span> [</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    patient_record.metadata[<span class="st">"ed_frame_idx"</span>],</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    patient_record.metadata[<span class="st">"mid_frame_idx"</span>],</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    patient_record.metadata[<span class="st">"es_frame_idx"</span>]</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>frame_names <span class="op">=</span> [<span class="st">'ED'</span>, <span class="st">'Mid'</span>, <span class="st">'ES'</span>]</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>mid_slice <span class="op">=</span> original_data.shape[<span class="dv">2</span>] <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Create figure with three pairs of images</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">15</span>))</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">'Original vs Turgut Cropped Images'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Process each frame</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, (frame, name) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(frames, frame_names)):</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> original_data[:, :, mid_slice, frame]</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> normalize_image(img)</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>        cropped_img <span class="op">=</span> apply_turgut_crop(img, img.shape[<span class="dv">0</span>])</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot original</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>        axes[idx, <span class="dv">0</span>].imshow(img, cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>        axes[idx, <span class="dv">0</span>].set_title(<span class="ss">f'Original - </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>        axes[idx, <span class="dv">0</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot cropped</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>        axes[idx, <span class="dv">1</span>].imshow(cropped_img, cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>        axes[idx, <span class="dv">1</span>].set_title(<span class="ss">f'Turgut Cropped - </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>        axes[idx, <span class="dv">1</span>].axis(<span class="st">'off'</span>)</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ValueError</span> <span class="im">as</span> e:</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Error processing </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> frame: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Print crop dimensions for reference</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>img_size <span class="op">=</span> img.shape[<span class="dv">0</span>]</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Original size: </span><span class="sc">{</span>img<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Cropped size: </span><span class="sc">{</span>cropped_img<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Turgut cropping parameters:"</span>)</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Top: </span><span class="sc">{</span><span class="bu">int</span>(<span class="fl">0.21</span> <span class="op">*</span> img_size)<span class="sc">}</span><span class="ss"> pixels"</span>)</span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Left: </span><span class="sc">{</span><span class="bu">int</span>(<span class="fl">0.325</span> <span class="op">*</span> img_size)<span class="sc">}</span><span class="ss"> pixels"</span>)</span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Height/Width: </span><span class="sc">{</span><span class="bu">int</span>(<span class="fl">0.375</span> <span class="op">*</span> img_size)<span class="sc">}</span><span class="ss"> pixels"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-cropping" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cropping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="dataset_cmr_acdc_files/figure-html/fig-cropping-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;2.4: Comparison of original and Turgut-cropped cardiac images across ED, Mid, and ES frames"><img src="dataset_cmr_acdc_files/figure-html/fig-cropping-output-1.png" width="935" height="1416" class="figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cropping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.4: Comparison of original and Turgut-cropped cardiac images across ED, Mid, and ES frames
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Original size: (216, 256)
+Cropped size: (81, 81)
+
+Turgut cropping parameters:
+Top: 45 pixels
+Left: 70 pixels
+Height/Width: 81 pixels</code></pre>
+</div>
+</div>
+<p>The Turgut Biobank cropping uses fixed relative parameters to focus on the central region of the heart: - Starting at 21% from the top - Starting at 32.5% from the left - Taking a square region that is 37.5% of the original image size</p>
+<p>By examining all three cardiac phases (ED, Mid, ES), we can better evaluate whether these fixed cropping parameters consistently capture the relevant cardiac structures in our ACDC dataset. This analysis helps determine if we need to adjust these parameters for our specific use case.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/digital-garden-ipole-bat-defe3df969a524a173991f9eabea11962cf78d\.pages\.fhnw\.ch\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="A General Overview of Techniques and Visualizations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">A General Overview of Techniques and Visualizations</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./dataset_ecg_arrhythmia.html" class="pagination-link" aria-label="Dataset - 12-lead ECG for Arrhythmia Study">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dataset - 12-lead ECG for Arrhythmia Study</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>ECG and CMR Unimodal Representation Learning</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"descPosition":"bottom","closeEffect":"zoom","openEffect":"zoom","loop":false,"selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

@@ -1,0 +1,30 @@
+# @package _global_
+
+hydra:
+  mode: MULTIRUN
+  sweeper:
+    params:
+      +fold: 1,2,3,4,5
+
+defaults:
+  - override /model: cmr_classifier
+  - override /modality: ${data}/acdc
+  - override /data: cmr
+
+data:
+  batch_size: 8
+  saturation: 0.5 # https://github.com/oetu/MMCL-ECG-CMR/blob/bd3c18672de8e5fa73bb753613df94547bd6245b/mmcl/utils/utils.py#L88
+  downstream: true
+  cross_validation: true
+  fold_number: ${fold}
+
+model:
+  learning_rate: 0.00009044034567645982
+  classifier_type: "linear"
+  warmup_epochs: 15
+  weight_decay: 0.00000061789258310122
+
+trainer:
+  max_epochs: 150
+
+tags: ["cross_validation"]

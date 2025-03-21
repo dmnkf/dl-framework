@@ -1,0 +1,4 @@
+_target_: src.models.cmr_encoder.CMREncoder
+
+# (Turgut et al., 2025, p. 5): "For the image encoder, we use a ResNet50 [..]”
+backbone_model_name: "resnet50"

@@ -1,0 +1,13 @@
+hydra:
+  launcher:
+    _target_: hydra_plugins.hydra_submitit_launcher.submitit_slurm_launcher.SlurmLauncher
+    partition: 'gpu'
+    gpus_per_node: 1
+    cpus_per_task: 4
+    mem_gb: 16
+    time: 60  # minutes
+    nodes: 1
+    tasks_per_node: 1
+    # Additional SLURM parameters can be specified here
+    additional_parameters:
+      gres: gpu:1

@@ -1,0 +1,52 @@
+project:
+  type: book
+  preview:
+    port: 4200
+    browser: true
+  output-dir: _book
+
+title: "Fine-Tuning Pre-Trained ECG and CMR Encoders with a Modular Pipeline and Comprehensive Evaluation for Cardiovascular Diagnostics"
+author: "Dominik Filliger & Noah Leuenberger"
+date: last-modified
+
+book:
+  chapters:
+    - index.qmd
+    - dataset_cmr_acdc.qmd
+    - dataset_ecg_arrhythmia.qmd
+    - phase1.qmd
+    - phase2.qmd
+    - phase3.qmd
+  page-navigation: true
+  search: true
+  site-url: https://digital-garden-ipole-bat-defe3df969a524a173991f9eabea11962cf78d.pages.fhnw.ch/
+  downloads: [pdf]
+  repo-url: https://gitlab.fhnw.ch/ipole-bat/projection.git
+  page-footer: "Fine-Tuning Pre-Trained ECG and CMR Encoders with a Modular Pipeline and Comprehensive Evaluation for Cardiovascular Diagnostics"
+
+highlight-style: github
+
+number-sections: true
+number-depth: 1
+code-fold: true
+toc: true
+
+format:
+  html:
+    theme: cosmo
+    code-block-background: true
+    code-copy: true
+    page-layout: full
+    grid:
+      sidebar-width: 200px
+      body-width: 1150px
+      margin-width: 150px
+      gutter-width: 1.5rem
+
+  pdf:
+    documentclass: scrbook
+
+execute:
+  eval: true
+  warning: false
+  echo: true

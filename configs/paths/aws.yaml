@@ -1,0 +1,14 @@
+defaults:
+  - default
+
+bucket_name: "fhnw-artifacts"
+processed_data_dir: "s3://${paths.bucket_name}/data/processed"
+log_dir: "s3://${paths.bucket_name}/logs"
+config_dir: "s3://${paths.bucket_name}/configs"
+
+# path to output directory, created dynamically by hydra
+# path generation pattern is specified in `configs/hydra/default.yaml`
+# use it to store all files generated during the run, like ckpts and metrics
+# for aws we need to specifiy the bucket name
+output_dir: "s3://${paths.bucket_name}/output"
+work_dir: ${hydra:runtime.cwd}

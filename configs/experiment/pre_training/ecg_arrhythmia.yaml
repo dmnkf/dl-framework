@@ -1,0 +1,21 @@
+# @package _global_
+defaults:
+  - override /model: mae
+  - override /modality: ${data}/arrhythmia
+  - override /data: ecg
+
+data:
+  batch_size: 128
+
+  # From Turgut et. al (2025):
+  #   "We augment the 12-lead ECG data using
+  #   random cropping (scale=0.5 only during pre-training),
+  #   Gaussian noise (sigma=0.25 during pre-training, 0.2 during finetuning),
+  #   amplitude rescaling (sigma=0.5 during pretraining and fine-tuning),
+  #   and Fourier transform surrogates (phase noise magnitude=0.1 during pre-training, 0.075 during fine-tuning)."
+  jitter_sigma: 0.25
+  rescaling_sigma: 0.5
+  ft_surr_phase_noise: 0.1
+
+trainer:
+  max_epochs: 400

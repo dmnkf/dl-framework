@@ -1,0 +1,7 @@
+data_root: ${paths.data_dir}
+dataset_key: ${modality.dataset_key}
+
+num_workers: 4
+pin_memory: true
+persistent_workers: true
+use_train_subsample: false

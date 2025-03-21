@@ -1,0 +1,20 @@
+_target_: src.models.cmr_classifier.CMRClassifier
+
+defaults:
+  - cmr_encoder
+
+num_classes: ${modality.num_classes}
+classifier_type: "linear"
+weights: null
+
+# Optimizer & Scheduler
+learning_rate: 3e-3   # From SimCLR ECG unimodal pretraining (Turgut et al., 2025, p. 5)
+weight_decay: 1e-4    # From SimCLR ECG unimodal pretraining (Turgut et al., 2025, p. 5)
+scheduler: "cosine"
+warmup_epochs: 10
+max_epochs: ${trainer.max_epochs}
+anneal_max_epochs: ${trainer.max_epochs}
+
+# Backbone
+freeze_encoder: false
+pretrained_weights: "model_weights/image_encoder_mmcl.pth"

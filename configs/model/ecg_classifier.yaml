@@ -1,0 +1,30 @@
+_target_: src.models.ecg_classifier.ECGClassifier
+
+defaults:
+  - ecg_encoder # Same because both use ViT backbone
+
+
+learning_rate: 3e-6 # TODO: Check what we can reference as baseline either from paper or code
+weight_decay: .05   # https://github.com/oetu/mae/blob/ba56dd91a7b8db544c1cb0df3a00c5c8a90fbb65/main_finetune.py#L112
+layer_decay: 0.75   # Paper does not mention final value used, but made a sweep: (0.5, 0.75)
+drop_path_rate: 0.1 # https://github.com/oetu/mae/blob/ba56dd91a7b8db544c1cb0df3a00c5c8a90fbb65/main_finetune.py#L82
+
+# https://github.com/oetu/mae/blob/ba56dd91a7b8db544c1cb0df3a00c5c8a90fbb65/main_finetune.py#L86
+mask_ratio: 0.0
+mask_c_ratio: 0.0
+mask_t_ratio: 0.0
+
+
+# Training parameters
+# “[..] over 400 epochs with a 5% warmup.” (Turgut et al., 2025, p. 5)
+warmup_epochs: 5 # This should be 5% of $trainer.max_epochs
+max_epochs: ${trainer.max_epochs}
+smoothing: 0.1 # https://github.com/oetu/mae/blob/ba56dd91a7b8db544c1cb0df3a00c5c8a90fbb65/main_finetune.py#L135
+
+# Downstream task parameters
+num_classes: ${modality.num_classes}
+global_pool: "attention_pool" # “We replace the global average pooling of fs(·) used during pre-training with the attention pooling described in [28].” (Turgut et al., 2025, p. 5)
+
+pretrained_weights: "model_weights/signal_encoder_mmcl.pth"
+
+task_type: ${modality.task_type}

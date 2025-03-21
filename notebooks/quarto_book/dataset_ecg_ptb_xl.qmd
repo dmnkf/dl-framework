@@ -1,0 +1,71 @@
+---
+title: "Dataset - PTB-XL"
+jupyter: python3
+lightbox: true
+---
+
+# Visualizing 12-Lead ECG Signals
+
+```{python}
+import sys
+import os
+from pathlib import Path
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+project_root = str(Path().absolute().parent.parent)
+sys.path.append(project_root)
+
+from src.data.unified import UnifiedDataset
+from src.data.dataset import DatasetModality
+from src.visualization.ecg_viz import plot_ecg_signals
+
+data_root = Path(project_root) / "data"
+
+arrhythmia_data = UnifiedDataset(data_root, modality=DatasetModality.ECG, dataset_key="ptbxl")
+records = arrhythmia_data.get_all_record_ids()
+metadata_store = arrhythmia_data.metadata_store
+
+# create a DataFrame with metadata and labels
+metadata_df = pd.DataFrame([{**metadata_store.get(record_id), 'record_id': record_id} for record_id in records])
+metadata_df['labels'] = [arrhythmia_data[record_id].preprocessed_record.target_labels for record_id in records]
+
+print(f"Found {len(records)} patients")
+metadata_df.head()
+```
+
+Next, we visualize the raw 12-lead ECG signals for the first record in the dataset:
+
+```{python}
+sample_record = arrhythmia_data[records[0]]
+plot_ecg_signals(sample_record.raw_record.data, sample_record.raw_record.metadata)
+```
+
+The figure above displays the **12-lead ECG signals** for a sample patient over **10 seconds**. Each lead provides a different perspective of the heart’s electrical activity, offering comprehensive insight into the patient's cardiac health.
+
+## Comparing Raw and Preprocessed Signals
+
+After preprocessing the ECG signals, we can view them in a more interpretable format. The preprocessing involves removing ALS baseline drift and normalizing the signals to have zero mean and unit variance. This step is critical for ensuring that subsequent models can learn meaningful patterns.
+
+Display the preprocessed ECG signals:
+
+```{python}
+plot_ecg_signals(sample_record.preprocessed_record.inputs, sample_record.preprocessed_record.metadata)
+```
+
+To quantify the changes introduced during preprocessing, we calculate the root mean square error (RMSE) between the raw and preprocessed signals. This metric provides a quantitative measure of the signal distortion due to preprocessing.
+
+```{python}
+def calculate_rmse(signal1, signal2):
+    return np.sqrt(np.mean((signal1 - signal2) ** 2))
+
+raw_signal = sample_record.raw_record.data
+preprocessed_signal = sample_record.preprocessed_record.inputs.numpy()
+
+assert calculate_rmse(raw_signal, raw_signal) == 0.0, "RMSE with itself should be zero"
+
+rmse = calculate_rmse(raw_signal, preprocessed_signal)
+print(f"RMSE between raw and preprocessed signals: {rmse:.2f} microvolts")
+```

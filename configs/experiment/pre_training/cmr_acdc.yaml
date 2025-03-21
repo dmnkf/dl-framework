@@ -1,0 +1,8 @@
+# @package _global_
+defaults:
+  - override /model: sim_clr
+  - override /modality: ${data}/acdc
+  - override /data: cmr
+
+trainer:
+  max_epochs: 200

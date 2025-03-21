@@ -1,0 +1,20 @@
+# @package _global_
+
+defaults:
+  - default
+  - override /model: cmr_classifier
+  - override /modality: ${data}/acdc
+  - override /data: cmr
+
+data:
+  downstream: true
+
+model:
+  warmup_epochs: 5
+  pretrained_weights: null
+  weight_decay: 0.0
+
+trainer:
+  max_epochs: 100
+  # Use only a small subset of data
+  overfit_batches: 1

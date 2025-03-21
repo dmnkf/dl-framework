@@ -1,0 +1,13 @@
+# @package _global_
+
+defaults:
+  - default
+  - override /model: cmr_classifier
+  - override /modality: ${data}/acdc
+  - override /data: cmr
+
+data:
+  downstream: true
+
+trainer:
+  fast_dev_run: true

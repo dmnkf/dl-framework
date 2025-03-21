@@ -1,0 +1,20 @@
+# @package _global_
+hydra:
+  mode: MULTIRUN
+  sweeper:
+    params:
+      +fold: 1,2,3,4,5
+
+defaults:
+  - override /model: cmr_encoder
+  - override /modality: ${data}/acdc
+  - override /data: cmr
+
+data:
+  cross_validation: true
+  fold_number: ${fold}
+
+splits:
+ - val  
+
+ckpt_path: model_weights/image_encoder_mmcl.pth

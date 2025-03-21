@@ -1,0 +1,29 @@
+# @package _global_
+
+defaults:
+  - default
+  - override /model: cmr_classifier
+
+optimized_metric: "val_accuracy"
+
+hydra:
+  sweeper:
+    n_jobs: 1
+    direction: maximize
+    n_trials: 200
+
+    params:
+      model.learning_rate: interval(0.0000001, 0.001)
+      model.weight_decay: interval(0.0, 0.00001)
+      data.batch_size: choice(8, 16, 32)
+      
+      model.classifier_type: choice("linear", "mlp")
+      
+      model.warmup_epochs: 15 # 5%
+      trainer.max_epochs: 300
+
+
+callbacks:
+  early_stopping:
+    monitor: ${optimized_metric}
+    mode: max

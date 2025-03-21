@@ -1,0 +1,29 @@
+_target_: src.models.sim_clr.SimCLR
+
+weights: null
+log_images: False
+
+projection_dim: 128   # (Turgut et al., 2025, p. 5): "[...] which separately project the embeddings to a shared latent space of 128 dimensions."
+
+# Note: Values here are refering to unimodal SimCLR ECG training mentioned in the paper (Turgut et al., 2025, p. 5):
+temperature: 0.1      # "[...] τ set to 0.1"
+learning_rate: 3e-3   # "[...] learning rate to 3*10^-3"
+weight_decay: 1e-4    # "[...] and the weight decay to 10^−4"
+
+# Linear Probing
+# https://github.com/oetu/MMCL-ECG-CMR/blob/main/mmcl/configs/config.yaml
+lr_classifier: 3e-4
+weight_decay_classifier: 1e-4
+num_classes: ${modality.num_classes}
+init_strat: "kaiming"
+
+# Optimizer & Scheduler
+scheduler: "anneal"
+anneal_max_epochs: ${trainer.max_epochs}
+max_epochs: ${trainer.max_epochs}
+warmup_epochs: 10
+check_val_every_n_epoch: 1
+
+# Backbone
+encoder_backbone_model_name: "resnet50"  # (Turgut et al., 2025, p. 5): "For the image encoder, we use a ResNet50 [..]”
+pretrained_weights: "model_weights/image_encoder_simclr.pth"

@@ -1,0 +1,319 @@
+---
+title: "Evaluation 1: Embedding Space Analysis (Pre-trained vs Fine-tuned)"
+jupyter: python3
+lightbox: true
+---
+
+
+In this notebook, we compare **Baseline (pre-trained)** vs. **Fine-tuned** embeddings on the full test set.  
+We highlight **single-labeled** records in color while the rest are shown in gray.
+
+
+## Imports
+Here, we import Python standard libraries and our local project modules.
+
+```{python}
+#| lines_to_next_cell: 2
+import sys
+from pathlib import Path
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import umap
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
+import matplotlib.patheffects as PathEffects
+
+# Ensure project path is in sys.path
+project_root = Path().absolute().parent.parent
+sys.path.append(str(project_root))
+
+# Our project modules
+from src.visualization.embedding_viz import run_umap
+from src.data.unified import UnifiedDataset
+from src.data.dataset import DatasetModality
+
+# Matplotlib style
+plt.style.use("seaborn-v0_8-whitegrid")
+plt.rcParams["figure.figsize"] = (16, 8)
+plt.rcParams["font.size"] = 12
+```
+
+## Color Palettes and Helpers
+We define fixed colors for specific labels, as well as group-based color assignments.
+
+```{python}
+SINGLE_COLOR_PALETTE = sns.color_palette("tab10", 11)
+
+FIXED_LABEL_COLORS = {
+    "SR": SINGLE_COLOR_PALETTE[0],     # Blue
+    "AFIB": SINGLE_COLOR_PALETTE[1],   # Orange
+    "SB": SINGLE_COLOR_PALETTE[2],     # Green
+    "GSVT": SINGLE_COLOR_PALETTE[3],   # Red
+    "PACE": SINGLE_COLOR_PALETTE[4],   # Purple
+}
+
+COLOR_PALETTES = {
+    "Rhythm": SINGLE_COLOR_PALETTE,
+    "Morphology": SINGLE_COLOR_PALETTE,
+    "Duration": SINGLE_COLOR_PALETTE,
+    "Amplitude": SINGLE_COLOR_PALETTE,
+    "Other": SINGLE_COLOR_PALETTE,
+}
+
+def get_group_color_map(df_labels):
+    """
+    Generate a dict: group_label_map[group][label] -> color.
+    df_labels must have 'integration_name' and 'group'.
+    """
+    # Get all unique labels
+    all_labels = df_labels["integration_name"].unique()
+
+    # Map each unique label to a color
+    label_to_color = {}
+    
+    # First, use fixed colors for specific labels
+    for label in all_labels:
+        if label in FIXED_LABEL_COLORS:
+            label_to_color[label] = FIXED_LABEL_COLORS[label]
+    
+    # Then assign colors to remaining labels
+    color_idx = 0
+    for label in all_labels:
+        if label not in label_to_color:
+            # Skip any colors used in FIXED_LABEL_COLORS
+            while (color_idx < len(SINGLE_COLOR_PALETTE) and 
+                   any(SINGLE_COLOR_PALETTE[color_idx] == c 
+                       for c in FIXED_LABEL_COLORS.values())):
+                color_idx += 1
+            
+            if color_idx < len(SINGLE_COLOR_PALETTE):
+                label_to_color[label] = SINGLE_COLOR_PALETTE[color_idx]
+                color_idx += 1
+            else:
+                # fallback color
+                label_to_color[label] = (0.5, 0.5, 0.5)
+    
+    # Create the group structure
+    group_label_map = {}
+    for _, row in df_labels.iterrows():
+        label = row["integration_name"]
+        group = row["group"]
+        if group not in group_label_map:
+            group_label_map[group] = {}
+        if label not in group_label_map[group]:
+            group_label_map[group][label] = label_to_color[label]
+
+    return group_label_map
+
+# Distinct markers for each group
+GROUP_MARKERS = {
+    "Rhythm": "o",
+    "Morphology": "s",
+    "Duration": "^",
+    "Amplitude": "D",
+    "Other": "X",
+}
+```
+
+## Data Loading
+Here, we load the **Arrhythmia (Chapman) test set** from our `UnifiedDataset`.  
+We then retrieve embeddings for **Baseline** and **Fine-Tuned** models.
+
+```{python}
+#| lines_to_next_cell: 2
+print("Phase 1: UMAP on FULL data, highlighting single-labeled records.")
+print("=" * 70)
+
+arr_data = UnifiedDataset(
+    Path(project_root) / "data", modality=DatasetModality.ECG, dataset_key="arrhythmia"
+)
+arr_splits = arr_data.get_splits()
+arr_test_ids = arr_splits.get("test", [])
+
+arr_md_store = arr_data.metadata_store
+
+pretrained_embedding = "baseline"
+finetuned_embedding = "fine_tuned_50"
+
+records_info = []
+emb_base_list = []
+emb_ft_list = []
+
+for rid in arr_test_ids:
+    meta = arr_md_store.get(rid, {})
+    labels_meta = meta.get("labels_metadata", [])
+
+    try:
+        emb_base = arr_data.get_embeddings(rid, embeddings_type=pretrained_embedding)
+        emb_ft = arr_data.get_embeddings(rid, embeddings_type=finetuned_embedding)
+    except Exception as e:
+        print(f"Skipping {rid} (missing embeddings). Err: {e}")
+        continue
+
+    records_info.append(
+        {"record_id": rid, "labels_meta": labels_meta, "n_labels": len(labels_meta)}
+    )
+    emb_base_list.append(emb_base)
+    emb_ft_list.append(emb_ft)
+
+if not records_info:
+    print("No records found. Exiting.")
+    sys.exit()
+
+df_records = pd.DataFrame(records_info)
+df_records["row_idx"] = df_records.index  # 0..N-1
+
+# Stack embeddings
+baseline_embeddings = np.vstack(emb_base_list)
+finetuned_embeddings = np.vstack(emb_ft_list)
+
+print(f"Total records loaded: {len(df_records)}")
+print(" - Baseline shape:", baseline_embeddings.shape)
+print(" - Fine-tuned shape:", finetuned_embeddings.shape)
+```
+
+## Single-Labeled Subset
+We now identify records that have **exactly one** label and store this subset separately.
+
+```{python}
+#| lines_to_next_cell: 2
+mask_single = df_records["n_labels"] == 1
+df_single = df_records[mask_single].copy()
+
+df_single["integration_name"] = df_single["labels_meta"].apply(
+    lambda lm: lm[0].get("integration_name", "unknown") if len(lm) == 1 else "unknown"
+)
+df_single["group"] = df_single["labels_meta"].apply(
+    lambda lm: lm[0].get("group", "Other") if len(lm) == 1 else "Other"
+)
+
+print("Single-labeled records:", len(df_single))
+```
+
+## UMAP on the Full Dataset
+We run UMAP on **all records** (both single- and multi-labeled) for a global view, then highlight single-labeled in the plot.
+
+```{python}
+#| lines_to_next_cell: 2
+print("\nRunning UMAP (baseline & fine-tuned) on all records...")
+
+umap_params = dict(n_neighbors=15, n_components=2, metric="euclidean", random_state=42)
+baseline_umap = run_umap(baseline_embeddings, **umap_params)
+finetuned_umap = run_umap(finetuned_embeddings, **umap_params)
+
+print("UMAP finished.\n")
+
+# Prepare color mapping for single-labeled points
+single_labels = df_single[["integration_name", "group"]].drop_duplicates()
+group_color_mapping = get_group_color_map(single_labels)
+```
+
+## Visualization
+We create a **two-panel** figure comparing the **Baseline** vs. **Fine-tuned** spaces,  
+using gray for all records and colorful markers for single-labeled examples.
+
+```{python}
+fig, axes = plt.subplots(1, 2, figsize=(16, 8))
+fig.suptitle(
+    "Chapman ECG Embedding Visualization: Baseline vs. Fine-Tuned Model",
+    fontsize=18,
+    fontweight="bold",
+)
+
+def plot_embedding(ax, emb_2d, title):
+    ax.set_title(title, fontsize=14)
+
+    # (1) All points in light gray
+    ax.scatter(
+        emb_2d[:, 0],
+        emb_2d[:, 1],
+        color="lightgray",
+        edgecolor="none",
+        s=40,
+        alpha=0.6,
+        label="All Records",
+    )
+
+    # (2) Overlay single-labeled points
+    for row in df_single.itertuples():
+        row_idx = row.row_idx
+        label_name = getattr(row, "integration_name")
+        group_name = getattr(row, "group")
+
+        color = group_color_mapping[group_name].get(label_name, (0.5, 0.5, 0.5))
+        marker = GROUP_MARKERS.get(group_name, "o")
+
+        ax.scatter(
+            emb_2d[row_idx, 0],
+            emb_2d[row_idx, 1],
+            c=[color],
+            marker=marker,
+            s=80,
+            alpha=0.9,
+            edgecolors="white",
+            linewidth=0.5,
+        )
+
+    ax.set_xlabel("UMAP Dim 1", fontsize=12)
+    ax.set_ylabel("UMAP Dim 2", fontsize=12)
+    ax.grid(True, linestyle="--", alpha=0.5)
+
+plot_embedding(axes[0], baseline_umap, "Baseline (Pre-trained) Model")
+plot_embedding(axes[1], finetuned_umap, "Fine-tuned (Chapman) Model")
+
+# Build legend
+handles = []
+
+# Handle for "All Records"
+handles.append(
+    Line2D(
+        [0],
+        [0],
+        marker="o",
+        color="lightgray",
+        label="All Records",
+        markersize=10,
+        markeredgecolor="none",
+        linewidth=0,
+    )
+)
+
+# Group header + individual labels
+unique_groups = single_labels["group"].unique()
+for grp in unique_groups:
+    handles.append(Patch(color="none", label=f"\n{grp} Group:"))
+    grp_labels = single_labels[single_labels["group"] == grp]["integration_name"].unique()
+    mkr = GROUP_MARKERS.get(grp, "o")
+    for lbl in grp_labels:
+        c = group_color_mapping[grp].get(lbl, (0.5, 0.5, 0.5))
+        handles.append(
+            Line2D(
+                [0],
+                [0],
+                marker=mkr,
+                color="w",
+                markerfacecolor=c,
+                markersize=10,
+                label=f"  {lbl}",
+                linewidth=0,
+            )
+        )
+
+legend = fig.legend(
+    handles=handles,
+    loc="center right",
+    bbox_to_anchor=(1.05, 0.5),
+    fontsize=11,
+    frameon=True,
+    fancybox=True,
+    framealpha=0.95,
+    title="Single-Labeled\nGroups & Labels",
+    title_fontsize=12,
+)
+
+plt.savefig("baseline_vs_finetuned_embedding_visualization.png", dpi=150, bbox_inches="tight")
+plt.show()
+```
+

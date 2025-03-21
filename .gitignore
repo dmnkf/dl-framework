@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+
+# Data
+data/raw/
+data/interim/
+
+# Notebooks
+.ipynb_checkpoints
+.neptune/
+
+# Experiments
+experiments/logs/
+experiments/checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+coverage.xml
+*.cover
+
+.idea
+.venv
+
+outputs/
+
+.DS_Store
+.aider*
+.env
+
+lightning_logs/
+*.pt
+
+.ropeproject/autoimport.db
+
+.ropeproject/
+
+*.db-journal
+multirun/
+logs/
+reports/
+
+site/

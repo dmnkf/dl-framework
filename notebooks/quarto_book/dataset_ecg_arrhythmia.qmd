@@ -1,0 +1,814 @@
+---
+title: "Dataset - 12-lead ECG for Arrhythmia Study"
+jupyter: python3
+lightbox: true
+---
+
+# Introduction
+
+The 12-lead ECG dataset is a comprehensive repository created by Chapman University, Shaoxing People’s Hospital, and Ningbo First Hospital. It aims to facilitate research in arrhythmia detection and other cardiovascular studies. The dataset includes ECG signals collected from **45,152 patients**, all labeled by professional experts, with a **500 Hz** sampling rate. More details about the dataset can be found on the [A large scale 12-lead electrocardiogram database for arrhythmia study website](https://physionet.org/content/ecg-arrhythmia/1.0.0/).
+
+The ECG signals were collected as part of a clinical study to detect different types of **arrhythmias** and cardiovascular conditions. The dataset features ECGs in **WFDB** format, with both the raw data (`.mat` files) and the corresponding metadata (`.hea` files) containing information such as **age**, **gender**, **lead configuration**, and **SNOMED CT codes**.
+
+# Dataset Overview
+
+Below are some key details of the study population:
+
+- **Number of Patients**: 45,152  
+- **Sampling Rate**: 500 Hz  
+- **ECG Leads**: 12 (Standard leads)  
+- **Amplitude Unit**: Microvolt  
+- **Data Format**: WFDB (MAT and Header files)  
+- **SNOMED CT Codes**: Annotated for cardiovascular conditions  
+
+# Visualizing 12-Lead ECG Signals
+
+In this section, we visualize the complete 12-lead ECG signal for a sample patient. This overview allows us to examine the signal morphology across different leads and understand the overall quality of the data.
+
+```{python}
+import sys
+import os
+from pathlib import Path
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+project_root = str(Path().absolute().parent.parent)
+sys.path.append(project_root)
+
+from src.data.unified import UnifiedDataset
+from src.data.dataset import DatasetModality
+from src.visualization.ecg_viz import plot_ecg_signals
+
+data_root = Path(project_root) / "data"
+
+arrhythmia_data = UnifiedDataset(data_root, modality=DatasetModality.ECG, dataset_key="arrhythmia")
+records = arrhythmia_data.get_all_record_ids()
+metadata_store = arrhythmia_data.metadata_store
+
+# create a DataFrame with metadata and labels
+metadata_df = pd.DataFrame([{**metadata_store.get(record_id), 'record_id': record_id} for record_id in records])
+metadata_df['labels'] = [arrhythmia_data[record_id].preprocessed_record.target_labels for record_id in records]
+
+print(f"Found {len(records)} patients")
+metadata_df.head()
+```
+
+Next, we visualize the raw 12-lead ECG signals for the first record in the dataset:
+
+```{python}
+sample_record = arrhythmia_data[records[0]]
+plot_ecg_signals(sample_record.raw_record.data, sample_record.raw_record.metadata)
+```
+
+The figure above displays the **12-lead ECG signals** for a sample patient over **10 seconds**. Each lead provides a different perspective of the heart’s electrical activity, offering comprehensive insight into the patient's cardiac health.
+
+## Comparing Raw and Preprocessed Signals
+
+After preprocessing the ECG signals, we can view them in a more interpretable format. The preprocessing involves removing ALS baseline drift and normalizing the signals to have zero mean and unit variance. This step is critical for ensuring that subsequent models can learn meaningful patterns.
+
+Display the preprocessed ECG signals:
+
+```{python}
+plot_ecg_signals(sample_record.preprocessed_record.inputs, sample_record.preprocessed_record.metadata)
+```
+
+To quantify the changes introduced during preprocessing, we calculate the root mean square error (RMSE) between the raw and preprocessed signals. This metric provides a quantitative measure of the signal distortion due to preprocessing.
+
+```{python}
+def calculate_rmse(signal1, signal2):
+    return np.sqrt(np.mean((signal1 - signal2) ** 2))
+
+raw_signal = sample_record.raw_record.data
+preprocessed_signal = sample_record.preprocessed_record.inputs.numpy()
+
+assert calculate_rmse(raw_signal, raw_signal) == 0.0, "RMSE with itself should be zero"
+
+rmse = calculate_rmse(raw_signal, preprocessed_signal)
+print(f"RMSE between raw and preprocessed signals: {rmse:.2f} microvolts")
+```
+
+# Patient Demographics and Condition Distribution
+
+In this section, we examine the demographic characteristics of the patients in the dataset, including age and gender distribution. These plots provide insights into the population characteristics and help assess the generalizability of machine learning models trained on this data.
+
+```{python}
+sample_size = len(metadata_df)
+fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+
+# Plot age distribution
+sns.histplot(metadata_df["age"].dropna(), kde=True, ax=axes[0])
+axes[0].set_title(f"Age Distribution of Patients (n={sample_size})")
+axes[0].set_xlabel("Age")
+axes[0].set_ylabel("Count")
+axes[0].grid(True)
+
+# Plot gender distribution
+metadata_df["is_male"] = metadata_df["is_male"].fillna("Unknown")
+sns.countplot(x="is_male", data=metadata_df, ax=axes[1])
+axes[1].set_title(f"Gender Distribution of Patients (n={sample_size})")
+axes[1].set_xlabel("Gender")
+axes[1].set_xticklabels(["Female", "Male"])
+axes[1].set_ylabel("Count")
+axes[1].grid(True, axis="y")
+
+plt.tight_layout()
+plt.subplots_adjust(wspace=0.3)
+plt.show()
+```
+
+The plots above illustrate the **age distribution** and **gender distribution** within the dataset, which are important for understanding the clinical diversity of the population.
+
+# Condition Mapping and SNOMED CT Codes
+
+The dataset provides detailed annotations for cardiovascular conditions using **SNOMED CT codes**. In this section, we load the mapping between these codes and their corresponding conditions and visualize the distribution of conditions across the dataset.
+
+The following code plots a bar chart of the distribution of SNOMED CT codes:
+
+```{python}
+# plot label distribution based on labels_metadata column which is a list of dictionaries
+# each dictionary contains the following info:
+#      def _build_metadata_mapping(self) -> Dict[str, dict]:
+#         """Create unified metadata dictionary from merged data"""
+#         return {
+#             str(row["Snomed_CT"]): {
+#                 "snomed_code": str(row["Snomed_CT"]),
+#                 "acronyms": self._unique_values(
+#                     row, ["Acronym Name_labeling", "Acronym Name_snomed"]
+#                 ),
+#                 "diagnosis_names": self._unique_values(row, ["Diagnosis", "Full Name"]),
+#                 self.INT_CODE_META_KEY: row.get("Integration Code", "Unlabeled"),
+#                 "integration_name": row.get("Integration Name", "Unlabeled"),
+#                 "group": row.get("Group", "Unlabeled"),
+#                 "comment": row.get("comment", ""),
+#             }
+#             for _, row in self.merged_df.iterrows()
+#         }
+
+fig, ax = plt.subplots(figsize=(15, 8))
+metadata_df["labels_metadata"].explode().apply(lambda x: x["snomed_code"]).value_counts().plot(kind="bar", ax=ax)
+ax.set_title("Distribution of Cardiovascular Conditions in the Dataset")
+ax.set_xlabel("SNOMED CT Code")
+ax.set_ylabel("Count")
+plt.xticks(rotation=45)
+plt.grid(axis="y")
+plt.show()
+```
+
+The above bar chart demonstrates that the distribution of cardiovascular conditions has a long tail, with some conditions being more prevalent than others. This information is crucial when developing machine learning models for condition detection and classification.
+
+# Distribution of Cardiovascular Conditions by Integration Code
+
+To gain a more clinically interpretable view of the label distribution, we now visualize the distribution of conditions based on **Integration Codes**. The following code maps integration codes to their corresponding diagnosis names and produces a bar plot.
+
+```{python}
+# Plot distribution of conditions based on integration codes
+labels_metadata_exploded = metadata_df['labels_metadata'].explode()
+
+# Create DataFrame from exploded metadata
+labels_data = pd.json_normalize(labels_metadata_exploded)
+
+# Count occurrences of each integration code
+integration_counts = labels_data['integration_code'].value_counts().reset_index()
+integration_counts.columns = ['integration_code', 'count']
+
+# Get unique integration code to name mapping
+integration_names = labels_data[['integration_code', 'integration_name']].drop_duplicates()
+
+# Merge counts with names
+integration_counts = integration_counts.merge(integration_names, on='integration_code', how='left')
+
+# Sort by count for better visualization
+integration_counts = integration_counts.sort_values('count', ascending=False)
+
+# Create the plot
+plt.figure(figsize=(15, 8))
+sns.barplot(x='integration_name', y='count', data=integration_counts, palette='viridis', hue='count')
+plt.title('Distribution of Cardiovascular Conditions by Integration Code', fontsize=14)
+plt.xlabel('Diagnosis Name', fontsize=12)
+plt.ylabel('Count', fontsize=12)
+plt.xticks(rotation=45, ha='right', fontsize=10)
+plt.yticks(fontsize=10)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
+```
+
+This bar plot shows the distribution of cardiovascular conditions by Integration Code, with human-readable diagnosis names on the x-axis. It highlights the most common conditions in the dataset while maintaining clarity through a clean layout and rotated labels.
+
+# Group Distribution and Label Merging Analysis
+
+In the following sections, we analyze group-level patterns within the label metadata. We first visualize how many records belong to each group and then explore the combination patterns of groups across records. Finally, we compare the number of labels before and after applying our merging logic.
+
+## Visualizing Group Distribution Across Records
+
+Each record may contain multiple labels that belong to one or more groups. We first extract the unique groups for each record so that if multiple labels belong to the same group, they are only counted once. The bar plot below shows the distribution of records per group.
+
+```{python}
+def extract_unique_groups(label_metadata_list):
+    if not isinstance(label_metadata_list, list):
+        return []
+    # Use the "group" key and strip spaces; fallback to "Unknown" if missing.
+    groups = [d.get("group", "Unknown").strip() for d in label_metadata_list if d.get("group") is not None]
+    return list(set(groups))
+
+metadata_df["unique_groups"] = metadata_df["labels_metadata"].apply(extract_unique_groups)
+
+# Explode the unique_groups list so that each record appears once per group
+group_exploded = metadata_df.explode("unique_groups")
+group_counts = group_exploded["unique_groups"].value_counts().reset_index()
+group_counts.columns = ["group", "record_count"]
+
+plt.figure(figsize=(10, 6))
+sns.barplot(x="group", y="record_count", data=group_counts, palette="Set2")
+plt.title("Distribution of Records per Group")
+plt.xlabel("Group")
+plt.ylabel("Number of Records")
+plt.xticks(rotation=45)
+plt.grid(axis="y", linestyle="--", alpha=0.7)
+plt.tight_layout()
+plt.show()
+```
+
+## Analyzing Group Combination Patterns
+
+Next, we analyze the frequency of different group combinations within each record. For every record, we sort and store the unique groups as a tuple. This allows us to count how often each combination occurs.
+
+```{python}
+metadata_df["group_combo"] = metadata_df["unique_groups"].apply(lambda x: tuple(sorted(x)))
+combo_counts = metadata_df["group_combo"].value_counts().reset_index()
+combo_counts.columns = ["group_combination", "record_count"]
+
+total_records = len(metadata_df)
+combo_counts["percentage"] = 100 * combo_counts["record_count"] / total_records
+
+print("Group Combination Frequencies (Top 10):")
+print(combo_counts.head(10))
+
+# Convert tuple to string for more readable labels in the plot
+combo_counts["combo_str"] = combo_counts["group_combination"].apply(lambda x: " + ".join(x))
+
+plt.figure(figsize=(12, 8))
+sns.barplot(x="record_count", y="combo_str", data=combo_counts.head(15), palette="magma")
+plt.title("Top 15 Group Combinations Across Records")
+plt.xlabel("Number of Records")
+plt.ylabel("Group Combination")
+plt.tight_layout()
+plt.show()
+```
+
+## Within-Record Label Patterns: Same Group vs. Multiple Groups
+
+Here, we compare the total number of labels per record (raw count) with the number of unique groups (after merging labels within the same group). This comparison highlights records where multiple labels within the same group have been merged.
+
+```{python}
+# Count total number of labels per record (raw, pre-merge)
+metadata_df["total_labels"] = metadata_df["labels_metadata"].apply(lambda lst: len(lst) if isinstance(lst, list) else 0)
+
+# Count the number of unique groups per record (post merging)
+metadata_df["num_unique_groups"] = metadata_df["unique_groups"].apply(len)
+
+# The difference indicates how many extra labels per record have been merged
+metadata_df["merging_applied"] = metadata_df.apply(lambda row: row["total_labels"] - row["num_unique_groups"], axis=1)
+
+same_group_count = (metadata_df["total_labels"] == metadata_df["num_unique_groups"]).sum()
+multiple_groups_count = (metadata_df["total_labels"] > metadata_df["num_unique_groups"]).sum()
+
+print(f"Records with all labels in different groups: {same_group_count}")
+print(f"Records with duplicate labels in the same group (merging candidates): {multiple_groups_count}")
+
+plt.figure(figsize=(10, 6))
+sns.countplot(x="num_unique_groups", data=metadata_df, palette="coolwarm")
+plt.title("Number of Unique Groups per Record")
+plt.xlabel("Unique Groups Count")
+plt.ylabel("Number of Records")
+plt.grid(axis="y", linestyle="--", alpha=0.7)
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(10, 6))
+sns.histplot(metadata_df["merging_applied"], bins=range(0, metadata_df["merging_applied"].max()+2), kde=False)
+plt.title("Distribution of Merging Events per Record")
+plt.xlabel("Number of Extra (Merged) Labels")
+plt.ylabel("Number of Records")
+plt.grid(axis="y", linestyle="--", alpha=0.7)
+plt.tight_layout()
+plt.show()
+
+
+# In the subgroup merging logic, when a record has multiple labels in the same group,
+# only one label is kept (either the most common or the alphabetically first label).
+# Here, we quantify the effect of this logic by comparing the total raw labels (pre-merge)
+# with the merged labels (unique groups per record) in so called "merging events".
+
+total_raw_labels = metadata_df["total_labels"].sum()
+total_merged_labels = metadata_df["num_unique_groups"].sum()
+
+print("Total number of labels (raw, pre-merge):", total_raw_labels)
+print("Total number of labels (after merging to unique groups):", total_merged_labels)
+print("Total number of merging events (labels removed):", total_raw_labels - total_merged_labels)
+
+affected_records = (metadata_df["merging_applied"] > 0).sum()
+print(f"Number of records affected by merging: {affected_records} out of {total_records} ({(100*affected_records/total_records):.2f}%)")
+
+# Visualizing the effect on a sample of records
+sample_records = metadata_df.sample(n=50, random_state=42).copy()
+sample_records = sample_records.sort_index()
+
+plt.figure(figsize=(12, 6))
+plt.plot(sample_records.index, sample_records["total_labels"], "o-", label="Raw Label Count", markersize=5)
+plt.plot(sample_records.index, sample_records["num_unique_groups"], "o-", label="Unique Groups (After Merging)", markersize=5)
+plt.title("Comparison of Raw Label Count vs. Merged Label Count (Sample of Records)")
+plt.xlabel("Record Index (Sampled)")
+plt.ylabel("Label Count")
+plt.legend()
+plt.grid(axis="y", linestyle="--", alpha=0.7)
+plt.tight_layout()
+plt.show()
+```
+
+## Heatmap of Group Co-occurrence
+
+The heatmap below shows the normalized cross-correlation of group memberships. It displays the percentage of records that contain each pair of groups. For clarity, only the lower triangle of the matrix is shown.
+
+```{python}
+all_groups = sorted(set(grp for groups in metadata_df["unique_groups"] for grp in groups))
+co_occurrence = pd.DataFrame(0, index=all_groups, columns=all_groups)
+
+for groups in metadata_df["unique_groups"]:
+    for g1 in groups:
+        for g2 in groups:
+            co_occurrence.loc[g1, g2] += 1
+
+# Normalize the co-occurrence counts to percentages (with respect to the total number of records)
+co_occurrence_percent = (co_occurrence / len(metadata_df)) * 100
+
+# Create a mask to hide the upper triangle of the heatmap
+mask = np.triu(np.ones_like(co_occurrence_percent, dtype=bool))
+
+plt.figure(figsize=(10, 8))
+sns.heatmap(co_occurrence_percent, mask=mask, annot=True, fmt=".1f", cmap="YlGnBu")
+plt.title("Normalized Heatmap of Group Co-occurrence (%)")
+plt.xlabel("Group")
+plt.ylabel("Group")
+plt.tight_layout()
+plt.show()
+```
+
+# Label Metadata Merging
+
+In many records, multiple labels may belong to the same group. To simplify the analysis and improve consistency, we merge these labels based on a defined logic. For each group, if multiple labels are present, the merging function selects either the most common label (if available) or the alphabetically first label (based on the integration code). The following function encapsulates this merging logic.
+
+```{python}
+# This function encapsulates the merging logic for a record's labels.
+# For each group in the record, if multiple labels are present, it selects the most common label (if available)
+# or otherwise the alphabetically first label (based on the integration code).
+# Additionally, it uses the first available diagnosis name (from the "diagnosis_names" list) as the readable label.
+#
+# The function returns a dictionary mapping each group to a tuple (final_integration_code, final_readable_label).
+
+def get_readable_label(meta):
+    # Use the first diagnosis name if available; otherwise, fallback to the integration code.
+    names = meta.get("diagnosis_names")
+    if isinstance(names, list) and len(names) > 0:
+        return names[0]
+    return meta.get("integration_code", "Unlabeled")
+
+def merge_labels_for_record(label_metadata, most_common_label_by_group):
+    """
+    label_metadata: list of dictionaries, each containing keys 'group', 'integration_code', 'diagnosis_names'
+    most_common_label_by_group: dict mapping group -> integration_code (most common across dataset)
+    
+    Returns:
+        dict: mapping group -> (final_integration_code, final_readable_label)
+    """
+    group_to_labels = {}
+    for meta in label_metadata:
+        group = meta.get("group", "Unknown").strip()
+        code = meta.get("integration_code", "Unlabeled")
+        readable = get_readable_label(meta)
+        group_to_labels.setdefault(group, {})
+        # Use a tuple (code, readable) to uniquely represent a label.
+        group_to_labels[group][code] = readable
+
+    merged = {}
+    for group, labels in group_to_labels.items():
+        # If the most common label is present, choose that.
+        if most_common_label_by_group.get(group) in labels:
+            chosen_code = most_common_label_by_group[group]
+            chosen_readable = labels[chosen_code]
+        else:
+            # Otherwise, choose the label with the alphabetically first integration code.
+            chosen_code = sorted(labels.keys())[0]
+            chosen_readable = labels[chosen_code]
+        merged[group] = (chosen_code, chosen_readable)
+    return merged
+```
+
+## Final Label Distribution Comparison (Raw vs. Merged)
+
+Finally, we compare the raw label distributions with the final distributions after applying the merging logic. For each group, we normalize the counts to percentages and create side-by-side bar plots. This comparison helps illustrate the impact of the merging process on the dataset.
+
+```{python}
+raw_label_counts = {}
+for idx, row in metadata_df.iterrows():
+    for meta in row["labels_metadata"]:
+        group = meta.get("group", "Unknown").strip()
+        # Use the first diagnosis name as the readable label.
+        readable = get_readable_label(meta)
+        raw_label_counts.setdefault(group, {})
+        raw_label_counts[group][readable] = raw_label_counts[group].get(readable, 0) + 1
+
+# Determine the most common integration code per group (based on raw counts) for merging logic.
+most_common_label_by_group = {}
+for group, counts in raw_label_counts.items():
+    # Find the integration code corresponding to the highest count.
+    # Since raw_label_counts is keyed by readable label, we need to recover the integration code.
+    # For simplicity, we assume that the most common readable label corresponds uniquely to an integration code.
+    # To ensure consistency, we iterate over the records again.
+    label_counter = {}
+    for idx, row in metadata_df.iterrows():
+        for meta in row["labels_metadata"]:
+            if meta.get("group", "Unknown").strip() == group:
+                code = meta.get("integration_code", "Unlabeled")
+                label_counter[code] = label_counter.get(code, 0) + 1
+    if label_counter:
+        most_common_label_by_group[group] = max(label_counter, key=label_counter.get)
+    else:
+        most_common_label_by_group[group] = "Unlabeled"
+
+# Now, simulate final (merged) label assignment across all records.
+final_distribution = {}
+for idx, row in metadata_df.iterrows():
+    merged = merge_labels_for_record(row["labels_metadata"], most_common_label_by_group)
+    for group, (code, readable) in merged.items():
+        final_distribution.setdefault(group, {})
+        final_distribution[group][readable] = final_distribution[group].get(readable, 0) + 1
+```
+
+After computing the final label distributions, we plot side-by-side comparison plots for each group. The left plot shows the raw distribution, while the right plot displays the final distribution after merging.
+
+```{python}
+# For each group, create side-by-side comparison plots:
+# Left: Raw distribution (normalized to percentage)
+# Right: Final (merged) distribution (normalized to percentage)
+groups_sorted = sorted(raw_label_counts.keys())
+
+for group in groups_sorted:
+    # Prepare raw data: Convert counts to percentages.
+    raw_counts = raw_label_counts.get(group, {})
+    total_raw = sum(raw_counts.values())
+    raw_df = pd.DataFrame([
+        {"diagnosis": diag, "count": cnt, "percentage": (cnt / total_raw) * 100}
+        for diag, cnt in raw_counts.items()
+    ]).sort_values("percentage", ascending=True)  # sort ascending for horizontal barplot
+    
+    # Prepare final data: Convert counts to percentages.
+    final_counts = final_distribution.get(group, {})
+    total_final = sum(final_counts.values())
+    final_df = pd.DataFrame([
+        {"diagnosis": diag, "count": cnt, "percentage": (cnt / total_final) * 100}
+        for diag, cnt in final_counts.items()
+    ]).sort_values("percentage", ascending=True)
+    
+    fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+    
+    # Plot raw distribution using horizontal barplot
+    sns.barplot(x="percentage", y="diagnosis", data=raw_df, ax=axes[0], palette="Blues_d", hue='diagnosis')
+    axes[0].set_title(f"Raw Label Distribution for Group '{group}'")
+    axes[0].set_xlabel("Percentage (%)")
+    axes[0].set_ylabel("Diagnosis")
+    axes[0].grid(axis="x", linestyle="--", alpha=0.7)
+    # Annotate each bar with its percentage
+    for patch in axes[0].patches:
+        width = patch.get_width()
+        y = patch.get_y() + patch.get_height() / 2
+        axes[0].text(width + 0.5, y, f'{width:.1f}%', va='center', fontsize=9, color='black')
+    
+    # Plot final (merged) distribution using horizontal barplot
+    sns.barplot(x="percentage", y="diagnosis", data=final_df, ax=axes[1], palette="Greens_d", hue='diagnosis')
+    axes[1].set_title(f"Final Label Distribution for Group '{group}' (After Merging)")
+    axes[1].set_xlabel("Percentage (%)")
+    axes[1].set_ylabel("")
+    axes[1].grid(axis="x", linestyle="--", alpha=0.7)
+    # Annotate each bar with its percentage
+    for patch in axes[1].patches:
+        width = patch.get_width()
+        y = patch.get_y() + patch.get_height() / 2
+        axes[1].text(width + 0.5, y, f'{width:.1f}%', va='center', fontsize=9, color='black')
+    
+    plt.suptitle(f"Label Distribution Comparison for Group '{group}'", fontsize=16)
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.show()
+```
+
+## Impact of Label Merging on Records by Group
+
+In many records, multiple labels may fall into the same group. In our merging logic, if a record has more than one label for a given group, these labels are merged into a single representative label. In this section, we quantify the impact of this merging process on a per‐group basis. For each group, we compute the percentage of records that have multiple labels (and hence are impacted by merging) versus those that have only one label.
+
+The stacked bar plot below shows, for each group, the percentage of records where merging is applied ("Affected by Merging") and those where no merging is needed ("No Merging"). The percentages are annotated on each bar segment. For clarification purposes, a record belong to a group if it has n >= 1 labels for that group. If n > 1, then merging is applied to obtain a single label. Thus, the "Affected by Merging" segment can also be looked at as the percentage of records where n > 1.
+
+```{python}
+# Function to count the number of labels per group for a given record.
+def count_labels_by_group(label_metadata):
+    counts = {}
+    if isinstance(label_metadata, list):
+        for meta in label_metadata:
+            group = meta.get("group", "Unknown").strip()
+            counts[group] = counts.get(group, 0) + 1
+    return counts
+
+# For each record, count how many labels exist for each group.
+metadata_df["group_label_counts"] = metadata_df["labels_metadata"].apply(count_labels_by_group)
+
+# For each group, count records where merging is applied (more than one label) vs. not applied (exactly one label).
+group_stats = {}
+for idx, row in metadata_df.iterrows():
+    counts = row["group_label_counts"]
+    for group, count in counts.items():
+        if group not in group_stats:
+            group_stats[group] = {"merged": 0, "not_merged": 0}
+        if count > 1:
+            group_stats[group]["merged"] += 1
+        else:
+            group_stats[group]["not_merged"] += 1
+
+# Convert the group statistics to a DataFrame for plotting.
+group_stats_df = pd.DataFrame([
+    {
+        "group": group,
+        "merged": stats["merged"],
+        "not_merged": stats["not_merged"],
+        "total": stats["merged"] + stats["not_merged"]
+    }
+    for group, stats in group_stats.items()
+])
+
+# Calculate percentages for each group.
+group_stats_df["pct_merged"] = 100 * group_stats_df["merged"] / group_stats_df["total"]
+group_stats_df["pct_not_merged"] = 100 * group_stats_df["not_merged"] / group_stats_df["total"]
+
+# Sort groups for a cleaner plot.
+group_stats_df = group_stats_df.sort_values("total", ascending=False)
+
+# Create a stacked bar plot to visualize the impact of merging by group.
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Plot the "No Merging" segment as the base.
+bars_not = ax.bar(group_stats_df["group"], group_stats_df["pct_not_merged"],
+                  label="No Merging", color="skyblue")
+
+# Plot the "Merging Applied" segment on top.
+bars_merge = ax.bar(group_stats_df["group"], group_stats_df["pct_merged"],
+                    bottom=group_stats_df["pct_not_merged"], label="Affected by Merging", color="salmon")
+
+ax.set_ylabel("Percentage of Records in Group (%)")
+ax.set_title("Impact of Label Merging by Group")
+ax.legend()
+plt.xticks(rotation=45)
+
+# Annotate bar segments with the percentage values.
+for rect in bars_not:
+    height = rect.get_height()
+    if height > 0:
+        ax.text(rect.get_x() + rect.get_width()/2, rect.get_y() + height/2,
+                f"{height:.1f}%", ha="center", va="center", fontsize=9)
+
+for rect, base in zip(bars_merge, group_stats_df["pct_not_merged"]):
+    height = rect.get_height()
+    if height > 0:
+        ax.text(rect.get_x() + rect.get_width()/2, base + height/2,
+                f"{height:.1f}%", ha="center", va="center", fontsize=9)
+
+plt.tight_layout()
+plt.show()
+```
+
+The plot shows the per-group impact of label merging with clear percentage annotations on each segment, allowing you to see the exact proportion of records that required merging versus those that did not. We can see that especially the "Morphology" group has a high percentage of records where merging was applied (about 25%). For the other groups the percentage is lower.
+
+## Comparison of Label Combination Prevalence: Raw vs. Merged
+
+In addition to the per‐group merging impact, it is instructive to examine how label combination patterns change as a result of merging. In the raw data, a record may have duplicate group entries (e.g. `["A", "A", "B"]`), whereas after merging, each record contains only unique group labels (e.g. `["A", "B"]`). The following visualizations compare the prevalence of label combinations before and after merging.
+
+We create two new columns: one for the raw label combinations (including duplicates) and one for the merged (unique) combinations. To avoid issues with tuple-based categories, we convert each tuple into a string representation.
+
+```{python}
+# Create a raw combination by collecting all group entries (including duplicates) per record.
+metadata_df["raw_combo"] = metadata_df["labels_metadata"].apply(
+    lambda lst: tuple(sorted([meta.get("group", "Unknown").strip() for meta in lst]))
+)
+
+# The merged combination is already computed as unique groups.
+metadata_df["merged_combo"] = metadata_df["unique_groups"].apply(lambda x: tuple(sorted(x)))
+
+# Compute the frequency counts for both raw and merged combinations.
+raw_combo_counts = metadata_df["raw_combo"].value_counts().reset_index()
+raw_combo_counts.columns = ["combo", "count"]
+merged_combo_counts = metadata_df["merged_combo"].value_counts().reset_index()
+merged_combo_counts.columns = ["combo", "count"]
+
+# Create string representations for the combinations.
+raw_combo_counts["combo_str"] = raw_combo_counts["combo"].apply(lambda x: " + ".join(x) if isinstance(x, tuple) else str(x))
+merged_combo_counts["combo_str"] = merged_combo_counts["combo"].apply(lambda x: " + ".join(x) if isinstance(x, tuple) else str(x))
+
+# Calculate percentages with respect to the total number of records.
+total_records = len(metadata_df)
+raw_combo_counts["percentage"] = 100 * raw_combo_counts["count"] / total_records
+merged_combo_counts["percentage"] = 100 * merged_combo_counts["count"] / total_records
+```
+
+The side-by-side horizontal bar plots below show the top 10 most common label combinations before merging (raw) and after merging. Each bar is annotated with the percentage of records that have that combination.
+
+```{python}
+fig, axes = plt.subplots(1, 2, figsize=(16, 8), sharey=True)
+
+# Plot raw combination frequencies.
+sns.barplot(x="percentage", y="combo_str", data=raw_combo_counts.head(10),
+            ax=axes[0], palette="Blues_d")
+axes[0].set_title("Top 10 Label Combinations (Raw)")
+axes[0].set_xlabel("Percentage of Records (%)")
+axes[0].set_ylabel("Label Combination")
+for p in axes[0].patches:
+    width = p.get_width()
+    axes[0].text(width + 0.5, p.get_y() + p.get_height()/2,
+                 f"{width:.1f}%", va="center", fontsize=9)
+
+# Plot merged combination frequencies.
+sns.barplot(x="percentage", y="combo_str", data=merged_combo_counts.head(10),
+            ax=axes[1], palette="Greens_d")
+axes[1].set_title("Top 10 Label Combinations (After Merging)")
+axes[1].set_xlabel("Percentage of Records (%)")
+axes[1].set_ylabel("")
+for p in axes[1].patches:
+    width = p.get_width()
+    axes[1].text(width + 0.5, p.get_y() + p.get_height()/2,
+                 f"{width:.1f}%", va="center", fontsize=9)
+
+plt.suptitle("Comparison of Label Combination Prevalence: Raw vs. Merged", fontsize=16)
+plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+plt.show()
+```
+
+The plots show the top 10 most common label combinations before and after merging. The annotations on each bar segment provide a clear view of the percentage of records that have that combination. The merging process has effectively has left the set of labels per record as expected with unique group labels.
+
+
+## Diagnosis Co-occurrence Heatmaps (Using Diagnosis Names)
+
+In addition to the previous visualizations based on group names, we now examine how diagnosis names co-occur across records. Because each label’s metadata may contain multiple diagnosis names, we define a helper function that combines them into a single string (separated by `" / "`). We then compute two heatmaps:
+- One for the **raw diagnosis names** (from all labels per record), and  
+- One for the **merged diagnosis names** (after applying our merging logic).
+
+### Raw Diagnosis Co-occurrence Heatmap
+
+For the raw data, we extract the diagnosis name from each label and compute a co-occurrence matrix counting, for every pair of diagnosis names, in how many records they appear together.
+
+```{python}
+# Define a helper function to combine diagnosis names from a label's metadata.
+def combined_diagnosis(meta):
+    names = meta.get("diagnosis_names")
+    if isinstance(names, list) and len(names) > 0:
+        return " / ".join(sorted(set(names)))
+    else:
+        return meta.get("integration_code", "Unlabeled")
+
+# For each record, compute the set of raw diagnosis names.
+raw_diagnosis_sets = metadata_df["labels_metadata"].apply(
+    lambda lst: set([combined_diagnosis(meta) for meta in lst]) if isinstance(lst, list) else set()
+)
+
+# Get all unique diagnosis names from raw data.
+all_raw_diagnoses = sorted({d for ds in raw_diagnosis_sets for d in ds})
+
+# Initialize the co-occurrence matrix.
+raw_co_occurrence = pd.DataFrame(0, index=all_raw_diagnoses, columns=all_raw_diagnoses)
+
+# Populate the matrix: for each record, for each pair of diagnosis names, increment the count.
+for ds in raw_diagnosis_sets:
+    for d1 in ds:
+        for d2 in ds:
+            raw_co_occurrence.loc[d1, d2] += 1
+
+plt.figure(figsize=(12, 10))
+sns.heatmap(raw_co_occurrence, annot=True, fmt="d", cmap="YlGnBu")
+plt.title("Raw Diagnosis Co-occurrence Heatmap (Counts)")
+plt.xlabel("Diagnosis Name")
+plt.ylabel("Diagnosis Name")
+plt.tight_layout()
+plt.show()
+```
+
+### Merged Diagnosis Co-occurrence Heatmap
+
+For the merged labels, each record has at most one label per group. We use our previously defined merging function (`merge_labels_for_record`) and the dictionary `most_common_label_by_group` (computed earlier) to obtain the merged labels. Then, we extract the diagnosis names from these merged results and compute their co-occurrence counts.
+
+```{python}
+# Compute merged labels for each record (if not already computed).
+metadata_df["merged_labels"] = metadata_df["labels_metadata"].apply(
+    lambda lst: merge_labels_for_record(lst, most_common_label_by_group) if isinstance(lst, list) else {}
+)
+
+# For each record, extract the set of merged diagnosis names.
+merged_diagnosis_sets = metadata_df["merged_labels"].apply(
+    lambda d: set(val[1] for val in d.values())
+)
+
+# Get all unique merged diagnosis names.
+all_merged_diagnoses = sorted({d for ds in merged_diagnosis_sets for d in ds})
+
+# Initialize the merged co-occurrence matrix.
+merged_co_occurrence = pd.DataFrame(0, index=all_merged_diagnoses, columns=all_merged_diagnoses)
+
+# Populate the matrix for merged diagnosis names.
+for ds in merged_diagnosis_sets:
+    for d1 in ds:
+        for d2 in ds:
+            merged_co_occurrence.loc[d1, d2] += 1
+
+plt.figure(figsize=(12, 10))
+sns.heatmap(merged_co_occurrence, annot=True, fmt="d", cmap="YlGnBu")
+plt.title("Merged Diagnosis Co-occurrence Heatmap (Counts)")
+plt.xlabel("Diagnosis Name")
+plt.ylabel("Diagnosis Name")
+plt.tight_layout()
+plt.show()
+```
+
+
+```{python}
+## Diagnosis Co-occurrence Heatmaps (Using Diagnosis Names) by Group
+
+# Get list of all groups from the label metadata in the dataset.
+all_groups = sorted({meta.get("group", "Unknown").strip() 
+                     for lst in metadata_df["labels_metadata"] if isinstance(lst, list) 
+                     for meta in lst})
+
+# Define a helper function to combine diagnosis names from a label's metadata.
+def combined_diagnosis(meta):
+    names = meta.get("diagnosis_names")
+    if isinstance(names, list) and len(names) > 0:
+        # Combine multiple diagnosis names with a separator.
+        return " / ".join(sorted(set(names)))
+    else:
+        return meta.get("integration_code", "Unlabeled")
+
+# Loop over each group and compute separate heatmaps for raw and merged diagnosis co-occurrence.
+for grp in all_groups:
+    ### RAW Diagnosis Co-occurrence for Group: grp
+    # For each record, extract diagnosis names from raw labels that belong to the current group.
+    raw_diag_sets = metadata_df["labels_metadata"].apply(
+        lambda lst: set([combined_diagnosis(meta) 
+                         for meta in lst 
+                         if meta.get("group", "Unknown").strip() == grp]) 
+                    if isinstance(lst, list) else set()
+    )
+    # Filter out records that don't have any diagnosis for this group.
+    raw_diag_sets = raw_diag_sets[raw_diag_sets.apply(lambda s: len(s) > 0)]
+    
+    # Get all unique diagnosis names for this group.
+    unique_raw_diag = sorted({d for s in raw_diag_sets for d in s})
+    
+    # Initialize the co-occurrence matrix for raw diagnosis names.
+    raw_co_occ = pd.DataFrame(0, index=unique_raw_diag, columns=unique_raw_diag)
+    
+    # Populate the matrix: for each record, increment counts for every pair of diagnosis names that co-occur.
+    for diag_set in raw_diag_sets:
+        for d1 in diag_set:
+            for d2 in diag_set:
+                raw_co_occ.loc[d1, d2] += 1
+    
+    # Plot the heatmap for raw diagnosis co-occurrence for this group.
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(raw_co_occ, annot=True, fmt="d", cmap="YlGnBu")
+    plt.title(f"Raw Diagnosis Co-occurrence Heatmap for Group: {grp}")
+    plt.xlabel("Diagnosis Name")
+    plt.ylabel("Diagnosis Name")
+    plt.tight_layout()
+    plt.show()
+    
+    ### Merged Diagnosis Co-occurrence for Group: grp
+    # For merged labels, each record has at most one label per group.
+    # Extract the merged diagnosis name for the current group.
+    merged_diag = metadata_df["merged_labels"].apply(
+        lambda d: d.get(grp, (None, None))[1] if isinstance(d, dict) and grp in d else None
+    )
+    # Keep only non-None values.
+    merged_diag = merged_diag.dropna()
+    
+    # In merged labels, since each record contributes only one diagnosis per group,
+    # the co-occurrence matrix will be diagonal (each record only "co-occurs" with itself).
+    unique_merged_diag = merged_diag.unique()
+    merged_counts = merged_diag.value_counts().sort_index()
+    merged_co_occ = pd.DataFrame(0, index=unique_merged_diag, columns=unique_merged_diag)
+    for diag in unique_merged_diag:
+        merged_co_occ.loc[diag, diag] = merged_counts[diag]
+    
+    # Plot the heatmap for merged diagnosis co-occurrence for this group.
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(merged_co_occ, annot=True, fmt="d", cmap="YlGnBu")
+    plt.title(f"Merged Diagnosis Co-occurrence Heatmap for Group: {grp}")
+    plt.xlabel("Diagnosis Name")
+    plt.ylabel("Diagnosis Name")
+    plt.tight_layout()
+    plt.show()
+```

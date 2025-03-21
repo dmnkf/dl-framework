@@ -1,0 +1,6 @@
+Class,Baseline Ratio,Fine-Tuned Ratio,% Improvement
+DCM,1.1449,1.7382,51.83
+HCM,1.1268,1.6632,47.6
+MINF,1.1538,1.4363,24.48
+NOR,1.0742,1.2537,16.71
+RV,1.2675,1.902,50.07

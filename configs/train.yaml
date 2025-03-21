@@ -1,0 +1,27 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - paths: default
+  - modality: ${data}/arrhythmia
+  - data: ecg
+  - model: mae
+  - callbacks: default
+  - logger: wandb
+  - trainer: default
+  - runner: default
+  - hydra: default
+  - extras: default
+  
+  - experiment: null
+  - hparams_search: null
+  - debug: null
+
+task_name: "train"
+tags: ["dev"]
+
+train: True
+test: False
+
+seed: 2022
+ckpt_path: null

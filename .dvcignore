@@ -1,0 +1,5 @@
+# Ignore all directories except the ones with a ! in front of them
+**/
+
+!data/
+!model_weights/

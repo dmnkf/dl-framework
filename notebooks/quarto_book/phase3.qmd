@@ -1,0 +1,581 @@
+---
+title: Phase 3 - Cross-Domain Notebook
+jupyter: python3
+lightbox: true
+---
+
+In this notebook, we integrate **Arrhythmia (Chapman)** and **PTB-XL** ECG embeddings 
+to analyze cross-domain performance of both the **Baseline** and **Fine-tuned** models.
+
+
+## Imports and Configuration
+
+```{python}
+import sys
+from pathlib import Path
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
+
+project_root = Path().absolute().parent.parent
+sys.path.append(str(project_root))
+
+from src.visualization.embedding_viz import run_umap
+from src.data.unified import UnifiedDataset
+from src.data.dataset import DatasetModality
+
+plt.rcParams["figure.figsize"] = (16, 8)
+plt.rcParams["font.size"] = 12
+```
+
+## Data Loading: Arrhythmia & PTB-XL
+
+```{python}
+arr_data = UnifiedDataset(
+    project_root / "data", modality=DatasetModality.ECG, dataset_key="arrhythmia"
+)
+ptbxl_data = UnifiedDataset(
+    project_root / "data", modality=DatasetModality.ECG, dataset_key="ptbxl"
+)
+
+arr_splits = arr_data.get_splits()
+ptbxl_splits = ptbxl_data.get_splits()
+
+arr_test_ids = arr_splits.get("test", [])
+ptbxl_test_ids = ptbxl_splits.get("test", [])
+
+arr_md_store = arr_data.metadata_store
+ptbxl_md_store = ptbxl_data.metadata_store
+
+pretrained_embedding = "baseline"
+finetuned_embedding = "fine_tuned_50"
+```
+
+## Mapping and Label Definitions
+
+```{python}
+PTBXL_ARR_MAP = {
+    "AFIB": "AFIB",
+    "AFLT": "AFIB",
+    "SR":   "SR",
+    "SARRH": "SR",
+    "SBRAD": "SB",
+    "PACE":  "PACE",
+    "STACH": "GSVT",
+    "SVARR": "GSVT",
+    "SVTAC": "GSVT",
+    "PSVT":  "GSVT",
+}
+
+LABELS_OF_INTEREST = ["AFIB", "GSVT", "SB", "SR", "PACE"]
+
+LABEL_COLOR_MAP = {
+    "SR":   sns.color_palette("tab10")[0],  # Blue
+    "AFIB": sns.color_palette("tab10")[1],  # Orange
+    "SB":   sns.color_palette("tab10")[2],  # Green
+    "GSVT": sns.color_palette("tab10")[3],  # Red
+    "PACE": sns.color_palette("tab10")[4],  # Purple
+}
+
+label2color = LABEL_COLOR_MAP
+```
+
+## Arrhythmia (Phase 1) Embeddings & Metadata
+
+```{python}
+#| lines_to_next_cell: 1
+arr_records_info = []
+emb_base_list_arr = []
+emb_ft_list_arr = []
+
+for rid in arr_test_ids:
+    meta = arr_md_store.get(rid, {})
+    labels_meta = meta.get("labels_metadata", [])
+    try:
+        emb_base = arr_data.get_embeddings(rid, embeddings_type=pretrained_embedding)
+        emb_ft = arr_data.get_embeddings(rid, embeddings_type=finetuned_embedding)
+    except Exception:
+        continue
+    arr_records_info.append({"record_id": rid, "labels_meta": labels_meta})
+    emb_base_list_arr.append(emb_base)
+    emb_ft_list_arr.append(emb_ft)
+
+df_arr = pd.DataFrame(arr_records_info)
+df_arr["row_idx"] = df_arr.index
+
+baseline_arr = np.vstack(emb_base_list_arr)
+finetuned_arr = np.vstack(emb_ft_list_arr)
+```
+
+## Treat "PACE" as Rhythm
+
+```{python}
+def find_rhythm_labels(labels_meta):
+    """
+    Return a list of integration_names that are group="Rhythm" or "PACE".
+    """
+    rhythm_names = []
+    for lm in labels_meta:
+        integration_name = lm.get("integration_name", "")
+        group = lm.get("group", "")
+        if group == "Rhythm" or integration_name == "PACE":
+            rhythm_names.append(integration_name)
+    return rhythm_names
+
+df_arr["rhythm_labels"] = df_arr["labels_meta"].apply(find_rhythm_labels)
+df_arr["n_rhythm_labels"] = df_arr["rhythm_labels"].apply(len)
+
+def get_single_label_of_interest(row):
+    if row["n_rhythm_labels"] == 1:
+        lbl = row["rhythm_labels"][0]
+        if lbl in LABELS_OF_INTEREST:
+            return lbl
+    return None
+
+df_arr["single_rhythm_label"] = df_arr.apply(get_single_label_of_interest, axis=1)
+```
+
+## PTB-XL Embeddings & Metadata
+
+```{python}
+ptbxl_records_info = []
+emb_base_list_ptb = []
+emb_ft_list_ptb = []
+
+for rid in ptbxl_test_ids:
+    meta = ptbxl_md_store.get(rid, {})
+    scp_codes = meta.get("scp_codes", {})
+    scp_statements = meta.get("scp_statements", {})
+
+    valid_rhythm_codes = []
+    for code_key in scp_codes:
+        if code_key in PTBXL_ARR_MAP:
+            code_info = scp_statements.get(code_key, {})
+            if code_info.get("rhythm", 0.0) == 1.0:
+                valid_rhythm_codes.append(code_key)
+
+    if len(valid_rhythm_codes) == 1:
+        code_key = valid_rhythm_codes[0]
+        mapped_label = PTBXL_ARR_MAP[code_key]
+        try:
+            emb_base = ptbxl_data.get_embeddings(rid, embeddings_type=pretrained_embedding)
+            emb_ft = ptbxl_data.get_embeddings(rid, embeddings_type=finetuned_embedding)
+        except Exception:
+            continue
+
+        ptbxl_records_info.append(
+            {"record_id": rid, "ptbxl_code": code_key, "mapped_label": mapped_label}
+        )
+        emb_base_list_ptb.append(emb_base)
+        emb_ft_list_ptb.append(emb_ft)
+
+df_ptbxl = pd.DataFrame(ptbxl_records_info)
+df_ptbxl["row_idx"] = df_ptbxl.index
+
+baseline_ptb = np.vstack(emb_base_list_ptb)
+finetuned_ptb = np.vstack(emb_ft_list_ptb)
+```
+
+## UMAP on Combined Arrhythmia + PTB-XL
+
+```{python}
+#| lines_to_next_cell: 1
+umap_params = dict(n_neighbors=15, n_components=2, metric="euclidean", random_state=42)
+
+def combine_and_umap(arr_emb, ptb_emb):
+    combined = np.vstack([arr_emb, ptb_emb])
+    combined_umap = run_umap(combined, **umap_params)
+    coords_arr = combined_umap[: len(arr_emb)]
+    coords_ptb = combined_umap[len(arr_emb) :]
+    return coords_arr, coords_ptb
+
+arr_baseline_umap, ptb_baseline_umap = combine_and_umap(baseline_arr, baseline_ptb)
+arr_finetuned_umap, ptb_finetuned_umap = combine_and_umap(finetuned_arr, finetuned_ptb)
+
+df_arr_baseline = df_arr.copy()
+df_arr_baseline["umap_x"] = arr_baseline_umap[:, 0]
+df_arr_baseline["umap_y"] = arr_baseline_umap[:, 1]
+
+df_arr_finetuned = df_arr.copy()
+df_arr_finetuned["umap_x"] = arr_finetuned_umap[:, 0]
+df_arr_finetuned["umap_y"] = arr_finetuned_umap[:, 1]
+
+df_ptbxl_baseline = df_ptbxl.copy()
+df_ptbxl_baseline["umap_x"] = ptb_baseline_umap[:, 0]
+df_ptbxl_baseline["umap_y"] = ptb_baseline_umap[:, 1]
+
+df_ptbxl_finetuned = df_ptbxl.copy()
+df_ptbxl_finetuned["umap_x"] = ptb_finetuned_umap[:, 0]
+df_ptbxl_finetuned["umap_y"] = ptb_finetuned_umap[:, 1]
+```
+
+## Outlier Removal Helper
+
+```{python}
+#| lines_to_next_cell: 1
+def remove_outliers_2d(points, z_thresh=3.0):
+    if len(points) == 0:
+        return points
+    mean = np.mean(points, axis=0)
+    std = np.std(points, axis=0)
+    std[std < 1e-12] = 1e-12
+    z_scores = (points - mean) / std
+    dist = np.sqrt((z_scores**2).sum(axis=1))
+    return points[dist <= z_thresh]
+```
+
+## Joint Plot with Marginal KDEs
+
+```{python}
+#| lines_to_next_cell: 1
+def create_joint_plot(df_arr, df_ptb, title, figsize=(12, 8)):
+    arr_data = df_arr[["umap_x", "umap_y"]].copy()
+    arr_data["dataset"] = "Chapman"
+
+    ptb_data = df_ptb[["umap_x", "umap_y"]].copy()
+    ptb_data["dataset"] = "PTB-XL"
+
+    combined_data = pd.concat([arr_data, ptb_data])
+
+    g = sns.JointGrid(
+        data=combined_data, x="umap_x", y="umap_y", height=figsize[0], ratio=4
+    )
+
+    g.ax_joint.scatter(
+        df_arr["umap_x"],
+        df_arr["umap_y"],
+        color="lightgray",
+        s=20,
+        alpha=0.6,
+        label="Chapman (all)",
+    )
+
+    for lbl in LABELS_OF_INTEREST:
+        sub = df_arr.loc[df_arr["single_rhythm_label"] == lbl, ["umap_x", "umap_y"]].values
+        print(len(sub))
+        if len(sub) < 5:
+            continue
+        sub = remove_outliers_2d(sub, z_thresh=3.0 if lbl != "PACE" else 1.0)
+        if len(sub) < 5:
+            continue
+        sub_df = pd.DataFrame(sub, columns=["umap_x", "umap_y"])
+        sns.kdeplot(
+            data=sub_df,
+            x="umap_x",
+            y="umap_y",
+            fill=True,
+            levels=4,
+            alpha=0.25,
+            color=label2color.get(lbl, "red"),
+            ax=g.ax_joint,
+            label=None,
+        )
+
+    g.ax_joint.scatter(
+        df_ptb["umap_x"],
+        df_ptb["umap_y"],
+        c=[label2color.get(m, "black") for m in df_ptb["mapped_label"]],
+        marker="*",
+        s=120,
+        edgecolors="white",
+        linewidth=0.6,
+        alpha=0.9,
+        label="PTB-XL (single-rhythm, overlay)",
+    )
+
+    sns.kdeplot(data=arr_data, x="umap_x", color="lightblue", ax=g.ax_marg_x, label="Chapman")
+    sns.kdeplot(data=ptb_data, x="umap_x", color="orange", ax=g.ax_marg_x, label="PTB-XL")
+    sns.kdeplot(data=arr_data, y="umap_y", color="lightblue", ax=g.ax_marg_y)
+    sns.kdeplot(data=ptb_data, y="umap_y", color="orange", ax=g.ax_marg_y)
+
+    g.ax_marg_x.legend(fontsize=10)
+
+    g.ax_joint.set_xlabel("UMAP Dim 1")
+    g.ax_joint.set_ylabel("UMAP Dim 2")
+    g.ax_joint.set_title(title, fontsize=14)
+    g.ax_joint.grid(True, linestyle="--", alpha=0.5)
+
+    return g
+```
+
+## Create Two Joint Plots for Baseline vs. Fine-Tuned
+
+```{python}
+#| lines_to_next_cell: 1
+fig, axes = plt.subplots(1, 2, figsize=(16, 8))
+plt.subplots_adjust(wspace=0.3)
+fig.suptitle(
+    "Cross-Domain ECG Embedding Visualization: Fine-Tuned Model (Chapman) with PTB-XL Overlay",
+    fontsize=18,
+)
+
+g1 = create_joint_plot(
+    df_arr_baseline, df_ptbxl_baseline, f"Baseline (Pre-trained) Embeddings on Chapman"
+)
+g2 = create_joint_plot(
+    df_arr_finetuned, df_ptbxl_finetuned, f"Fine-tuned (Chapman) Embeddings"
+)
+
+g1.savefig("baseline_joint_plot.png")
+g2.savefig("finetuned_joint_plot.png")
+```
+
+## Plot Density Contours in a 1x2 Grid
+
+```{python}
+def plot_density_contours(ax, df_arr_plot, df_ptb_plot, panel_title, ignore_outliers=True):
+    ax.set_title(panel_title, fontsize=14)
+    ax.scatter(
+        df_arr_plot["umap_x"],
+        df_arr_plot["umap_y"],
+        color="lightgray",
+        s=20,
+        alpha=0.6,
+        label="Chapman (all)",
+    )
+    for lbl in LABELS_OF_INTEREST:
+        sub = df_arr_plot.loc[df_arr_plot["single_rhythm_label"] == lbl, ["umap_x", "umap_y"]].values
+        print(len(sub))
+        if len(sub) < 5:
+            continue
+        if ignore_outliers:
+            sub = remove_outliers_2d(sub, z_thresh=3.0 if lbl != "PACE" else 1.0)
+        if len(sub) < 5:
+            continue
+        sub_df = pd.DataFrame(sub, columns=["umap_x", "umap_y"])
+        sns.kdeplot(
+            data=sub_df,
+            x="umap_x",
+            y="umap_y",
+            fill=True,
+            levels=4,
+            alpha=0.25,
+            color=label2color.get(lbl, "red"),
+            ax=ax,
+            label=None,
+        )
+    ax.scatter(
+        df_ptb_plot["umap_x"],
+        df_ptb_plot["umap_y"],
+        c=[label2color.get(m, "black") for m in df_ptb_plot["mapped_label"]],
+        marker="*",
+        s=120,
+        edgecolors="white",
+        linewidth=0.6,
+        alpha=0.9,
+        label="PTB-XL (single-rhythm, overlay)",
+    )
+    ax.set_xlabel("UMAP Dim 1")
+    ax.set_ylabel("UMAP Dim 2")
+    ax.grid(True, linestyle="--", alpha=0.5)
+
+plot_density_contours(
+    axes[0],
+    df_arr_baseline,
+    df_ptbxl_baseline,
+    f"Baseline (Pre-trained) Embeddings on Chapman",
+)
+plot_density_contours(
+    axes[1],
+    df_arr_finetuned,
+    df_ptbxl_finetuned,
+    f"Fine-Tuned (Chapman) Embeddings",
+)
+
+plt.tight_layout(rect=[0, 0.2, 1, 0.97])
+```
+
+## Legend Construction
+
+```{python}
+general_handles = [
+    Line2D([0], [0], marker="o", color="lightgray", markersize=8, linewidth=0),
+    Line2D([0], [0], marker="*", color="black", markersize=15, linewidth=0),
+]
+general_labels = ["Chapman (all)", "PTB-XL (single-rhythm, overlay)"]
+
+contour_handles = [Patch(color="none")]
+contour_labels = ["Chapman Single-Label (Rhythm) Contours:"]
+
+for lbl in LABELS_OF_INTEREST:
+    clr = label2color.get(lbl, "black")
+    contour_handles.append(Patch(facecolor=clr, edgecolor="none", alpha=0.25))
+    contour_labels.append(f"{lbl} (Chapman)")
+
+ptbxl_handles = [Patch(color="none")]
+ptbxl_labels = ["PTB-XL Single-Rhythm (Mapped Labels):"]
+
+ptbxl_labels_present = sorted(df_ptbxl["mapped_label"].unique())
+for lbl in ptbxl_labels_present:
+    clr = label2color.get(lbl, "black")
+    ptbxl_handles.append(Line2D([0], [0], marker="*", color=clr, markersize=15, linewidth=0))
+    ptbxl_labels.append(f"{lbl}")
+
+legend1 = fig.legend(
+    general_handles,
+    general_labels,
+    loc="lower left",
+    bbox_to_anchor=(0.2, -0.04),
+    frameon=False,
+    fontsize=9,
+    handletextpad=0.5,
+)
+
+legend2 = fig.legend(
+    contour_handles,
+    contour_labels,
+    loc="lower center",
+    bbox_to_anchor=(0.5, -0.14),
+    frameon=False,
+    fontsize=9,
+    handletextpad=0.5,
+)
+
+legend3 = fig.legend(
+    ptbxl_handles,
+    ptbxl_labels,
+    loc="lower right",
+    bbox_to_anchor=(0.8, -0.14),
+    frameon=False,
+    fontsize=9,
+    handletextpad=0.5,
+)
+
+legend_frame = plt.Rectangle(
+    (0.15, -0.14),
+    0.7,
+    0.18,
+    transform=fig.transFigure,
+    fill=False,
+    edgecolor="gray",
+    linewidth=1,
+)
+fig.patches.append(legend_frame)
+
+plt.tight_layout(rect=[0, 0.15, 1, 0.97])
+plt.savefig("cross_domain_embedding_visualization.png", dpi=150, bbox_inches="tight")
+plt.show()
+```
+
+## Faceted Joint Plots per Label
+
+```{python}
+#| lines_to_next_cell: 2
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+def create_faceted_joint_plots(df_arr, df_ptb, title, figsize=(12, 12)):
+    n_labels = len(LABELS_OF_INTEREST)
+    n_cols = 3
+    n_rows = (n_labels + n_cols - 1) // n_cols
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=figsize)
+    fig.suptitle(f"{title} - Label-to-Label Overlap", fontsize=18)
+    axes = axes.flatten() if n_rows > 1 else axes
+
+    for i, lbl in enumerate(LABELS_OF_INTEREST):
+        if i >= len(axes):
+            break
+        ax = axes[i]
+        arr_lbl = df_arr[df_arr["single_rhythm_label"] == lbl].copy()
+        ptb_lbl = df_ptb[df_ptb["mapped_label"] == lbl].copy()
+        if len(arr_lbl) < 5 or len(ptb_lbl) < 2:
+            ax.text(0.5, 0.5, f"Not enough data", ha="center", va="center", transform=ax.transAxes)
+            continue
+
+        arr_points = remove_outliers_2d(arr_lbl[["umap_x", "umap_y"]].values,
+                                        z_thresh=3.0 if lbl != "PACE" else 1.0)
+        if len(arr_points) >= 5:
+            arr_lbl_clean = pd.DataFrame(arr_points, columns=["umap_x", "umap_y"])
+        else:
+            arr_lbl_clean = arr_lbl[["umap_x", "umap_y"]]
+
+        sns.scatterplot(
+            data=arr_lbl_clean,
+            x="umap_x",
+            y="umap_y",
+            color="lightgray",
+            s=20,
+            alpha=0.6,
+            ax=ax,
+            label="Chapman",
+        )
+
+        sns.scatterplot(
+            data=ptb_lbl,
+            x="umap_x",
+            y="umap_y",
+            color=label2color.get(lbl, "black"),
+            marker="*",
+            s=120,
+            edgecolors="white",
+            linewidth=0.6,
+            alpha=0.8,
+            ax=ax,
+            label="PTB-XL",
+        )
+
+        if len(arr_lbl_clean) >= 5:
+            sns.kdeplot(
+                data=arr_lbl_clean,
+                x="umap_x",
+                y="umap_y",
+                fill=True,
+                levels=4,
+                alpha=0.25,
+                color="lightgray",
+                ax=ax,
+                label=None,
+            )
+
+        ax.set_xlabel("UMAP Dim 1" if i >= len(axes) - n_cols else "")
+        ax.set_ylabel("UMAP Dim 2" if i % n_cols == 0 else "")
+
+        divider = make_axes_locatable(ax)
+        ax_top = divider.append_axes("top", size="15%", pad=0.1)
+        ax_top.tick_params(axis="both", which="both", labelbottom=False, labelleft=False)
+        if len(arr_lbl_clean) >= 5:
+            sns.kdeplot(data=arr_lbl_clean, x="umap_x", color="lightgray", ax=ax_top)
+        if len(ptb_lbl) >= 2:
+            sns.kdeplot(data=ptb_lbl, x="umap_x", color=label2color.get(lbl, "black"), ax=ax_top)
+        ax_top.set_title(f"Label: {lbl}", fontsize=14, pad=5)
+        ax_top.set_ylabel("")
+        ax_top.set_yticks([])
+
+        ax_right = divider.append_axes("right", size="15%", pad=0.1)
+        ax_right.tick_params(axis="both", which="both", labelbottom=False, labelleft=False)
+        if len(arr_lbl_clean) >= 5:
+            sns.kdeplot(data=arr_lbl_clean, y="umap_y", color="lightgray", ax=ax_right)
+        if len(ptb_lbl) >= 2:
+            sns.kdeplot(data=ptb_lbl, y="umap_y", color=label2color.get(lbl, "black"), ax=ax_right)
+        ax_right.set_xlabel("")
+        ax_right.set_xticks([])
+
+        if i == 0:
+            ax.legend(loc="lower right")
+
+    for j in range(i + 1, len(axes)):
+        axes[j].set_visible(False)
+
+    plt.tight_layout(rect=[0, 0, 1, 0.97])
+    return fig
+
+create_faceted_joint_plots(
+    df_arr_baseline,
+    df_ptbxl_baseline,
+    "Baseline (Pre-trained) Embeddings on Chapman (Faceted)",
+    figsize=(12, 12),
+)
+
+create_faceted_joint_plots(
+    df_arr_finetuned,
+    df_ptbxl_finetuned,
+    "Fine-Tuned (Chapman) Embeddings (Faceted)",
+    figsize=(12, 12),
+)
+
+plt.savefig("baseline_faceted_joint_plots.png", dpi=150, bbox_inches="tight")
+plt.savefig("finetuned_faceted_joint_plots.png", dpi=150, bbox_inches="tight")
+```
+

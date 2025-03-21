@@ -1,0 +1,7 @@
+[core]
+    remote = sb_bat
+['remote "ipole-aws"']
+    url = s3://fhnw-artifacts/data/dvc/
+['remote "sb_bat"']
+    url = ssh://u417010-sub5@u417010-sub5.your-storagebox.de:23
+    ask_passphrase = true

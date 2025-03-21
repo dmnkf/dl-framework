@@ -1,0 +1,26 @@
+# @package _global_
+
+defaults:
+  - default
+  - override /model: sim_clr
+  - override /modality: ${data}/acdc
+  - override /data: cmr
+  - override /logger: tensorboard
+  
+
+data:
+  batch_size: 2
+
+model:
+  learning_rate: 1e-4
+  weight_decay: 0.0
+  temperature: 0.07
+  log_images: False
+  pretrained_weights: null
+
+trainer:
+  max_epochs: 200
+  # Use only a small subset of data
+  overfit_batches: 2
+  gradient_clip_val: 0.0
+  accumulate_grad_batches: 1

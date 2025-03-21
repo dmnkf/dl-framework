@@ -1,0 +1,18 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - paths: default
+  - modality: ${data}/arrhythmia
+  - data: ecg
+  - model: mae
+  - trainer: default
+  - hydra: default
+  - extras: default
+
+  - experiment: null
+
+task_name: "eval"
+tags: ["dev"]
+
+ckpt_path: ???

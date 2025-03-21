@@ -1,0 +1,7 @@
+dataset_key: acdc
+
+img_size: 224
+# downstream task
+num_classes: 5
+
+

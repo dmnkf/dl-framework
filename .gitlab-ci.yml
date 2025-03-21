@@ -1,0 +1,136 @@
+.common_rules: &common_rules
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  - if: $CI_MERGE_REQUEST_IID
+
+.rye_setup: &rye_setup
+  image: python:3.12
+  variables: &rye_variables
+    RYE_HOME: "$CI_PROJECT_DIR/.rye"
+    LANG: C.UTF-8
+    LC_ALL: C.UTF-8
+  before_script:
+    - curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
+    - source "$RYE_HOME/env"
+    - rye sync --no-lock
+
+stages:
+  - test
+  - build
+  - deploy
+
+pytest:
+  <<: *rye_setup
+  stage: test
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .rye/
+      - .pytest_cache/
+  script:
+    - mkdir -p reports
+    - rye run test
+  coverage: '/(?i)total.*? (100(?:\.0+)?|[1-9]?\d(?:\.\d+)?)%/'
+  artifacts:
+    paths:
+      - reports/
+    reports:
+      junit: reports/junit.xml
+    when: always
+  rules: *common_rules
+  interruptible: true
+
+build-docs:
+  <<: *rye_setup
+  stage: build
+  needs:
+    - pytest
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .rye/
+  script:
+    - rye run build_docs
+  artifacts:
+    paths:
+      - site/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_MERGE_REQUEST_IID
+      variables:
+        PAGES_PREFIX: "mr-${CI_MERGE_REQUEST_IID}"
+  interruptible: true
+
+docker:
+  image: docker:cli
+  stage: build
+  needs:
+    - pytest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - /var/lib/docker
+  before_script:
+    - |
+      # Prepare image name and tag
+      if [[ -n "$CI_MERGE_REQUEST_IID" ]]; then
+        export SAFE_REF="mr-$CI_MERGE_REQUEST_IID";
+      else
+        export SAFE_REF=$(echo "$CI_COMMIT_REF_SLUG" | tr -c 'a-zA-Z0-9_.-' '-' | sed 's/^-//; s/-$//');
+      fi
+      export DOCKER_IMAGE_NAME="$CI_REGISTRY_IMAGE:$SAFE_REF"
+
+      # GitLab Registry
+      echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+      # Docker Hub
+      echo "$DOCKER_HUB_PASSWORD" | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+  script:
+    - |
+      docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $DOCKER_IMAGE_NAME -t "$DOCKER_IMAGE_NAME" -f docker/Dockerfile .
+      
+      # GitLab Registry
+      docker push "$DOCKER_IMAGE_NAME"
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        docker tag "$DOCKER_IMAGE_NAME" "$CI_REGISTRY_IMAGE:latest"
+        docker push "$CI_REGISTRY_IMAGE:latest"
+      fi
+
+      # Docker Hub
+      DOCKER_HUB_IMAGE_NAME="$DOCKER_HUB_USERNAME/$CI_PROJECT_NAME:$SAFE_REF"
+      docker tag "$DOCKER_IMAGE_NAME" "$DOCKER_HUB_IMAGE_NAME"
+      docker push "$DOCKER_HUB_IMAGE_NAME"
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        docker tag "$DOCKER_IMAGE_NAME" "$DOCKER_HUB_USERNAME/$CI_PROJECT_NAME:latest"
+        docker push "$DOCKER_HUB_USERNAME/$CI_PROJECT_NAME:latest"
+      fi
+  rules: *common_rules
+
+pages:
+  stage: deploy
+  needs:
+    - build-docs
+  variables:
+    PAGES_PREFIX: ""
+  script:
+    - mkdir -p public
+    - cp -r notebooks/quarto_book/_book/* public/
+    - mkdir -p public/docs
+    - cp -r site/* public/docs/
+  artifacts:
+    paths:
+      - public
+  pages:
+    path_prefix: "$PAGES_PREFIX"
+  environment:
+    name: "pages preview"
+    url: $CI_PAGES_URL/$PAGES_PREFIX
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        PAGES_PREFIX: ""
+    - if: $CI_MERGE_REQUEST_IID
+      variables:
+        PAGES_PREFIX: "mr-${CI_MERGE_REQUEST_IID}"

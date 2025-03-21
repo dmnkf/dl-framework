@@ -1,0 +1,39 @@
+_target_: src.models.mae_lit.LitMAE
+
+# From ECG Encoder
+img_size:
+  - ${modality.input_channels}
+  - ${modality.input_electrodes}
+  - ${modality.time_steps}
+patch_size:
+  - 1
+  - 100
+
+# ViT Backbone, from ECG Encoder
+# From Turgut et. al (2025): "with 3 layers and 6 heads that creates embeddings of size 384."
+embedding_dim: 384 
+depth: 3
+num_heads: 6
+mlp_ratio: 4.0
+
+mask_ratio: 0.8   # From Turgut et. al (2025): "masking ratio ρ of 0.8"
+ncc_weight: 0.1   # https://github.com/oetu/mae/blob/ba56dd91a7b8db544c1cb0df3a00c5c8a90fbb65/main_pretrain.py
+
+norm_layer:
+  _target_: torch.nn.LayerNorm
+  _partial_: true
+  eps: 1e-6
+norm_pix_loss: False  # https://github.com/oetu/mae/blob/ba56dd91a7b8db544c1cb0df3a00c5c8a90fbb65/main_pretrain.py#L77
+
+# Decoder
+decoder_embed_dim: 256
+decoder_depth: 2
+decoder_num_heads: 8
+
+# Optimizer & Scheduler
+learning_rate: 1e-5   # From Turgut et. al (2025): "base learning rate of 10−5"
+weight_decay: 0.15    # From Turgut et. al (2025): "weight decay of 0.15"
+warmup_epochs: 40     # From Turgut et. al (2025): "10% warmup" over 400 epochs
+max_epochs: ${trainer.max_epochs}
+
+pretrained_weights: "model_weights/signal_encoder_mdm.pth"

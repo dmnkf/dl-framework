@@ -1,0 +1,8 @@
+---
+title: "A General Overview of Techniques and Visualizations"
+subtitle: "Preamble"
+---
+
+This booklet provides an accessible overview of our bachelor thesis project, focusing on fine-tuning pre-trained ECG and CMR encoders using diverse datasets and evaluating their adaptability for cardiovascular diagnostics. Our goal is to establish foundational representations of cardiovascular data that can be expanded upon in future research, ultimately improving diagnostic capabilities for diverse patient populations.
+
+We explore how fine-tuning these pre-trained models with diverse data impacts their ability to capture nuanced, population-specific patterns, and whether they can effectively adapt to new contexts, such as varying health conditions, ethnic backgrounds, and socioeconomic profiles. Additionally, we present a modular, machine learning pipeline designed to support ongoing research and future integration of multimodal data.

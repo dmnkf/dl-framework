@@ -1,0 +1,11 @@
+# @package _global_
+
+defaults:
+  - override /model: ecg_encoder
+  - override /modality: ${data}/ptbxl
+  - override /data: ecg
+
+ckpt_path: model_weights/signal_encoder_mmcl.pth
+
+model:
+  global_pool: "attention_pool"

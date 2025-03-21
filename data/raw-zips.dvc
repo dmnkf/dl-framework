@@ -1,0 +1,6 @@
+outs:
+- md5: 6f1057952327405c214f3de81b3f8888.dir
+  size: 8985054450
+  nfiles: 5
+  hash: md5
+  path: raw-zips

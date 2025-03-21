@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dominik Filliger &amp; Noah Leuenberger">
+<meta name="dcterms.date" content="2025-02-14">
+
+<title>3&nbsp; Dataset - 12-lead ECG for Arrhythmia Study</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./phase1.html" rel="next">
+<link href="./dataset_cmr_acdc.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./dataset_ecg_arrhythmia.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dataset - 12-lead ECG for Arrhythmia Study</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+        <div class="sidebar-tools-collapse">
+    <a href="https://gitlab.fhnw.ch/ipole-bat/projection.git" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
+    <a href="./quarto_book.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+</div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">A General Overview of Techniques and Visualizations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dataset_cmr_acdc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Dataset - Automated Cardiac Diagnosis Challenge (ACDC)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dataset_ecg_arrhythmia.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dataset - 12-lead ECG for Arrhythmia Study</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phase1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Evaluation 1: Embedding Space Analysis (Pre-trained vs Fine-tuned)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phase2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Evaluation 2: Subcluster Analysis within Single-Label Groups</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./phase3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Phase 3 - Cross-Domain Notebook</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">4</span> Introduction</a></li>
+  <li><a href="#dataset-overview" id="toc-dataset-overview" class="nav-link" data-scroll-target="#dataset-overview"><span class="header-section-number">5</span> Dataset Overview</a></li>
+  <li><a href="#visualizing-12-lead-ecg-signals" id="toc-visualizing-12-lead-ecg-signals" class="nav-link" data-scroll-target="#visualizing-12-lead-ecg-signals"><span class="header-section-number">6</span> Visualizing 12-Lead ECG Signals</a>
+  <ul class="collapse">
+  <li><a href="#comparing-raw-and-preprocessed-signals" id="toc-comparing-raw-and-preprocessed-signals" class="nav-link" data-scroll-target="#comparing-raw-and-preprocessed-signals">Comparing Raw and Preprocessed Signals</a></li>
+  </ul></li>
+  <li><a href="#patient-demographics-and-condition-distribution" id="toc-patient-demographics-and-condition-distribution" class="nav-link" data-scroll-target="#patient-demographics-and-condition-distribution"><span class="header-section-number">7</span> Patient Demographics and Condition Distribution</a></li>
+  <li><a href="#condition-mapping-and-snomed-ct-codes" id="toc-condition-mapping-and-snomed-ct-codes" class="nav-link" data-scroll-target="#condition-mapping-and-snomed-ct-codes"><span class="header-section-number">8</span> Condition Mapping and SNOMED CT Codes</a></li>
+  <li><a href="#distribution-of-cardiovascular-conditions-by-integration-code" id="toc-distribution-of-cardiovascular-conditions-by-integration-code" class="nav-link" data-scroll-target="#distribution-of-cardiovascular-conditions-by-integration-code"><span class="header-section-number">9</span> Distribution of Cardiovascular Conditions by Integration Code</a></li>
+  <li><a href="#group-distribution-and-label-merging-analysis" id="toc-group-distribution-and-label-merging-analysis" class="nav-link" data-scroll-target="#group-distribution-and-label-merging-analysis"><span class="header-section-number">10</span> Group Distribution and Label Merging Analysis</a>
+  <ul class="collapse">
+  <li><a href="#visualizing-group-distribution-across-records" id="toc-visualizing-group-distribution-across-records" class="nav-link" data-scroll-target="#visualizing-group-distribution-across-records">Visualizing Group Distribution Across Records</a></li>
+  <li><a href="#analyzing-group-combination-patterns" id="toc-analyzing-group-combination-patterns" class="nav-link" data-scroll-target="#analyzing-group-combination-patterns">Analyzing Group Combination Patterns</a></li>
+  <li><a href="#within-record-label-patterns-same-group-vs.-multiple-groups" id="toc-within-record-label-patterns-same-group-vs.-multiple-groups" class="nav-link" data-scroll-target="#within-record-label-patterns-same-group-vs.-multiple-groups">Within-Record Label Patterns: Same Group vs.&nbsp;Multiple Groups</a></li>
+  <li><a href="#heatmap-of-group-co-occurrence" id="toc-heatmap-of-group-co-occurrence" class="nav-link" data-scroll-target="#heatmap-of-group-co-occurrence">Heatmap of Group Co-occurrence</a></li>
+  </ul></li>
+  <li><a href="#label-metadata-merging" id="toc-label-metadata-merging" class="nav-link" data-scroll-target="#label-metadata-merging"><span class="header-section-number">11</span> Label Metadata Merging</a>
+  <ul class="collapse">
+  <li><a href="#final-label-distribution-comparison-raw-vs.-merged" id="toc-final-label-distribution-comparison-raw-vs.-merged" class="nav-link" data-scroll-target="#final-label-distribution-comparison-raw-vs.-merged">Final Label Distribution Comparison (Raw vs.&nbsp;Merged)</a></li>
+  <li><a href="#impact-of-label-merging-on-records-by-group" id="toc-impact-of-label-merging-on-records-by-group" class="nav-link" data-scroll-target="#impact-of-label-merging-on-records-by-group">Impact of Label Merging on Records by Group</a></li>
+  <li><a href="#comparison-of-label-combination-prevalence-raw-vs.-merged" id="toc-comparison-of-label-combination-prevalence-raw-vs.-merged" class="nav-link" data-scroll-target="#comparison-of-label-combination-prevalence-raw-vs.-merged">Comparison of Label Combination Prevalence: Raw vs.&nbsp;Merged</a></li>
+  <li><a href="#diagnosis-co-occurrence-heatmaps-using-diagnosis-names" id="toc-diagnosis-co-occurrence-heatmaps-using-diagnosis-names" class="nav-link" data-scroll-target="#diagnosis-co-occurrence-heatmaps-using-diagnosis-names">Diagnosis Co-occurrence Heatmaps (Using Diagnosis Names)</a>
+  <ul class="collapse">
+  <li><a href="#raw-diagnosis-co-occurrence-heatmap" id="toc-raw-diagnosis-co-occurrence-heatmap" class="nav-link" data-scroll-target="#raw-diagnosis-co-occurrence-heatmap">Raw Diagnosis Co-occurrence Heatmap</a></li>
+  <li><a href="#merged-diagnosis-co-occurrence-heatmap" id="toc-merged-diagnosis-co-occurrence-heatmap" class="nav-link" data-scroll-target="#merged-diagnosis-co-occurrence-heatmap">Merged Diagnosis Co-occurrence Heatmap</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dataset - 12-lead ECG for Arrhythmia Study</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dominik Filliger &amp; Noah Leuenberger </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 14, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Introduction</h1>
+<p>The 12-lead ECG dataset is a comprehensive repository created by Chapman University, Shaoxing People’s Hospital, and Ningbo First Hospital. It aims to facilitate research in arrhythmia detection and other cardiovascular studies. The dataset includes ECG signals collected from <strong>45,152 patients</strong>, all labeled by professional experts, with a <strong>500 Hz</strong> sampling rate. More details about the dataset can be found on the <a href="https://physionet.org/content/ecg-arrhythmia/1.0.0/">A large scale 12-lead electrocardiogram database for arrhythmia study website</a>.</p>
+<p>The ECG signals were collected as part of a clinical study to detect different types of <strong>arrhythmias</strong> and cardiovascular conditions. The dataset features ECGs in <strong>WFDB</strong> format, with both the raw data (<code>.mat</code> files) and the corresponding metadata (<code>.hea</code> files) containing information such as <strong>age</strong>, <strong>gender</strong>, <strong>lead configuration</strong>, and <strong>SNOMED CT codes</strong>.</p>
+</section>
+<section id="dataset-overview" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Dataset Overview</h1>
+<p>Below are some key details of the study population:</p>
+<ul>
+<li><strong>Number of Patients</strong>: 45,152<br>
+</li>
+<li><strong>Sampling Rate</strong>: 500 Hz<br>
+</li>
+<li><strong>ECG Leads</strong>: 12 (Standard leads)<br>
+</li>
+<li><strong>Amplitude Unit</strong>: Microvolt<br>
+</li>
+<li><strong>Data Format</strong>: WFDB (MAT and Header files)<br>
+</li>
+<li><strong>SNOMED CT Codes</strong>: Annotated for cardiovascular conditions</li>
+</ul>
+</section>
+<section id="visualizing-12-lead-ecg-signals" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Visualizing 12-Lead ECG Signals</h1>
+<p>In this section, we visualize the complete 12-lead ECG signal for a sample patient. This overview allows us to examine the signal morphology across different leads and understand the overall quality of the data.</p>
+<div id="ec47894a" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>project_root <span class="op">=</span> <span class="bu">str</span>(Path().absolute().parent.parent)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>sys.path.append(project_root)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.unified <span class="im">import</span> UnifiedDataset</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.dataset <span class="im">import</span> DatasetModality</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.visualization.ecg_viz <span class="im">import</span> plot_ecg_signals</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>data_root <span class="op">=</span> Path(project_root) <span class="op">/</span> <span class="st">"data"</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>arrhythmia_data <span class="op">=</span> UnifiedDataset(data_root, modality<span class="op">=</span>DatasetModality.ECG, dataset_key<span class="op">=</span><span class="st">"arrhythmia"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>records <span class="op">=</span> arrhythmia_data.get_all_record_ids()</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>metadata_store <span class="op">=</span> arrhythmia_data.metadata_store</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># create a DataFrame with metadata and labels</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>metadata_df <span class="op">=</span> pd.DataFrame([{<span class="op">**</span>metadata_store.get(record_id), <span class="st">'record_id'</span>: record_id} <span class="cf">for</span> record_id <span class="kw">in</span> records])</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>metadata_df[<span class="st">'labels'</span>] <span class="op">=</span> [arrhythmia_data[record_id].preprocessed_record.target_labels <span class="cf">for</span> record_id <span class="kw">in</span> records]</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Found </span><span class="sc">{</span><span class="bu">len</span>(records)<span class="sc">}</span><span class="ss"> patients"</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>metadata_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 44817 patients</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">age</th>
+<th data-quarto-table-cell-role="th">is_male</th>
+<th data-quarto-table-cell-role="th">labels_metadata</th>
+<th data-quarto-table-cell-role="th">mat_file</th>
+<th data-quarto-table-cell-role="th">header_file</th>
+<th data-quarto-table-cell-role="th">record_id</th>
+<th data-quarto-table-cell-role="th">labels</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>70.0</td>
+<td>True</td>
+<td>[{'snomed_code': '164890007', 'acronyms': ['AF...</td>
+<td>a-large-scale-12-lead-electrocardiogram-databa...</td>
+<td>a-large-scale-12-lead-electrocardiogram-databa...</td>
+<td>JS18139</td>
+<td>[164889003, 55930002]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>52.0</td>
+<td>False</td>
+<td>[{'snomed_code': '284470004', 'acronyms': ['AP...</td>
+<td>a-large-scale-12-lead-electrocardiogram-databa...</td>
+<td>a-large-scale-12-lead-electrocardiogram-databa...</td>
+<td>JS20143</td>
+<td>[284470004, 427084000, 55827005, 427084000, 55...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>64.0</td>
+<td>True</td>
+<td>[{'snomed_code': '426177001', 'acronyms': ['SB...</td>
+<td>a-large-scale-12-lead-electrocardiogram-databa...</td>
+<td>a-large-scale-12-lead-electrocardiogram-databa...</td>
+<td>JS27820</td>
+<td>[426177001]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>60.0</td>
+<td>True</td>
+<td>[{'snomed_code': '426177001', 'acronyms': ['SB...</td>
+<td>a-large-scale-12-lead-electrocardiogram-databa...</td>
+<td>a-large-scale-12-lead-electrocardiogram-databa...</td>
+<td>JS31237</td>
+<td>[426177001]</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>54.0</td>
+<td>False</td>
+<td>[{'snomed_code': '426783006', 'acronyms': ['SR...</td>
+<td>a-large-scale-12-lead-electrocardiogram-databa...</td>
+<td>a-large-scale-12-lead-electrocardiogram-databa...</td>
+<td>JS22046</td>
+<td>[426783006]</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Next, we visualize the raw 12-lead ECG signals for the first record in the dataset:</p>
+<div id="d51898a4" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sample_record <span class="op">=</span> arrhythmia_data[records[<span class="dv">0</span>]]</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>plot_ecg_signals(sample_record.raw_record.data, sample_record.raw_record.metadata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-3-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-3-output-1.png" width="1430" height="1474" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The figure above displays the <strong>12-lead ECG signals</strong> for a sample patient over <strong>10 seconds</strong>. Each lead provides a different perspective of the heart’s electrical activity, offering comprehensive insight into the patient’s cardiac health.</p>
+<section id="comparing-raw-and-preprocessed-signals" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-raw-and-preprocessed-signals">Comparing Raw and Preprocessed Signals</h2>
+<p>After preprocessing the ECG signals, we can view them in a more interpretable format. The preprocessing involves removing ALS baseline drift and normalizing the signals to have zero mean and unit variance. This step is critical for ensuring that subsequent models can learn meaningful patterns.</p>
+<p>Display the preprocessed ECG signals:</p>
+<div id="b4aa3067" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plot_ecg_signals(sample_record.preprocessed_record.inputs, sample_record.preprocessed_record.metadata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-4-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-4-output-1.png" width="1430" height="1474" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To quantify the changes introduced during preprocessing, we calculate the root mean square error (RMSE) between the raw and preprocessed signals. This metric provides a quantitative measure of the signal distortion due to preprocessing.</p>
+<div id="377f90e6" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_rmse(signal1, signal2):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.sqrt(np.mean((signal1 <span class="op">-</span> signal2) <span class="op">**</span> <span class="dv">2</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>raw_signal <span class="op">=</span> sample_record.raw_record.data</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>preprocessed_signal <span class="op">=</span> sample_record.preprocessed_record.inputs.numpy()</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> calculate_rmse(raw_signal, raw_signal) <span class="op">==</span> <span class="fl">0.0</span>, <span class="st">"RMSE with itself should be zero"</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>rmse <span class="op">=</span> calculate_rmse(raw_signal, preprocessed_signal)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"RMSE between raw and preprocessed signals: </span><span class="sc">{</span>rmse<span class="sc">:.2f}</span><span class="ss"> microvolts"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>RMSE between raw and preprocessed signals: 211.13 microvolts</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="patient-demographics-and-condition-distribution" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Patient Demographics and Condition Distribution</h1>
+<p>In this section, we examine the demographic characteristics of the patients in the dataset, including age and gender distribution. These plots provide insights into the population characteristics and help assess the generalizability of machine learning models trained on this data.</p>
+<div id="d469da43" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sample_size <span class="op">=</span> <span class="bu">len</span>(metadata_df)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot age distribution</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>sns.histplot(metadata_df[<span class="st">"age"</span>].dropna(), kde<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>axes[<span class="dv">0</span>])</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="ss">f"Age Distribution of Patients (n=</span><span class="sc">{</span>sample_size<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">"Age"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"Count"</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].grid(<span class="va">True</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot gender distribution</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>metadata_df[<span class="st">"is_male"</span>] <span class="op">=</span> metadata_df[<span class="st">"is_male"</span>].fillna(<span class="st">"Unknown"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>sns.countplot(x<span class="op">=</span><span class="st">"is_male"</span>, data<span class="op">=</span>metadata_df, ax<span class="op">=</span>axes[<span class="dv">1</span>])</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="ss">f"Gender Distribution of Patients (n=</span><span class="sc">{</span>sample_size<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">"Gender"</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xticklabels([<span class="st">"Female"</span>, <span class="st">"Male"</span>])</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">"Count"</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].grid(<span class="va">True</span>, axis<span class="op">=</span><span class="st">"y"</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>plt.subplots_adjust(wspace<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-6-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-6-output-1.png" width="1430" height="470" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The plots above illustrate the <strong>age distribution</strong> and <strong>gender distribution</strong> within the dataset, which are important for understanding the clinical diversity of the population.</p>
+</section>
+<section id="condition-mapping-and-snomed-ct-codes" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Condition Mapping and SNOMED CT Codes</h1>
+<p>The dataset provides detailed annotations for cardiovascular conditions using <strong>SNOMED CT codes</strong>. In this section, we load the mapping between these codes and their corresponding conditions and visualize the distribution of conditions across the dataset.</p>
+<p>The following code plots a bar chart of the distribution of SNOMED CT codes:</p>
+<div id="302c212c" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot label distribution based on labels_metadata column which is a list of dictionaries</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># each dictionary contains the following info:</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#      def _build_metadata_mapping(self) -&gt; Dict[str, dict]:</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#         """Create unified metadata dictionary from merged data"""</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#         return {</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#             str(row["Snomed_CT"]): {</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#                 "snomed_code": str(row["Snomed_CT"]),</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#                 "acronyms": self._unique_values(</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#                     row, ["Acronym Name_labeling", "Acronym Name_snomed"]</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#                 ),</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#                 "diagnosis_names": self._unique_values(row, ["Diagnosis", "Full Name"]),</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#                 self.INT_CODE_META_KEY: row.get("Integration Code", "Unlabeled"),</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                 "integration_name": row.get("Integration Name", "Unlabeled"),</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                 "group": row.get("Group", "Unlabeled"),</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                 "comment": row.get("comment", ""),</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#             }</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#             for _, row in self.merged_df.iterrows()</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#         }</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">8</span>))</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>metadata_df[<span class="st">"labels_metadata"</span>].explode().<span class="bu">apply</span>(<span class="kw">lambda</span> x: x[<span class="st">"snomed_code"</span>]).value_counts().plot(kind<span class="op">=</span><span class="st">"bar"</span>, ax<span class="op">=</span>ax)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Distribution of Cardiovascular Conditions in the Dataset"</span>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"SNOMED CT Code"</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Count"</span>)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>plt.grid(axis<span class="op">=</span><span class="st">"y"</span>)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-7-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-7-output-1.png" width="1223" height="721" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The above bar chart demonstrates that the distribution of cardiovascular conditions has a long tail, with some conditions being more prevalent than others. This information is crucial when developing machine learning models for condition detection and classification.</p>
+</section>
+<section id="distribution-of-cardiovascular-conditions-by-integration-code" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Distribution of Cardiovascular Conditions by Integration Code</h1>
+<p>To gain a more clinically interpretable view of the label distribution, we now visualize the distribution of conditions based on <strong>Integration Codes</strong>. The following code maps integration codes to their corresponding diagnosis names and produces a bar plot.</p>
+<div id="5027d095" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot distribution of conditions based on integration codes</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>labels_metadata_exploded <span class="op">=</span> metadata_df[<span class="st">'labels_metadata'</span>].explode()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create DataFrame from exploded metadata</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>labels_data <span class="op">=</span> pd.json_normalize(labels_metadata_exploded)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Count occurrences of each integration code</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>integration_counts <span class="op">=</span> labels_data[<span class="st">'integration_code'</span>].value_counts().reset_index()</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>integration_counts.columns <span class="op">=</span> [<span class="st">'integration_code'</span>, <span class="st">'count'</span>]</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Get unique integration code to name mapping</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>integration_names <span class="op">=</span> labels_data[[<span class="st">'integration_code'</span>, <span class="st">'integration_name'</span>]].drop_duplicates()</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge counts with names</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>integration_counts <span class="op">=</span> integration_counts.merge(integration_names, on<span class="op">=</span><span class="st">'integration_code'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort by count for better visualization</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>integration_counts <span class="op">=</span> integration_counts.sort_values(<span class="st">'count'</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the plot</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">8</span>))</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>sns.barplot(x<span class="op">=</span><span class="st">'integration_name'</span>, y<span class="op">=</span><span class="st">'count'</span>, data<span class="op">=</span>integration_counts, palette<span class="op">=</span><span class="st">'viridis'</span>, hue<span class="op">=</span><span class="st">'count'</span>)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Distribution of Cardiovascular Conditions by Integration Code'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Diagnosis Name'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Count'</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>, ha<span class="op">=</span><span class="st">'right'</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>plt.yticks(fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>plt.grid(axis<span class="op">=</span><span class="st">'y'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-8-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-8-output-1.png" width="1431" height="758" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This bar plot shows the distribution of cardiovascular conditions by Integration Code, with human-readable diagnosis names on the x-axis. It highlights the most common conditions in the dataset while maintaining clarity through a clean layout and rotated labels.</p>
+</section>
+<section id="group-distribution-and-label-merging-analysis" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Group Distribution and Label Merging Analysis</h1>
+<p>In the following sections, we analyze group-level patterns within the label metadata. We first visualize how many records belong to each group and then explore the combination patterns of groups across records. Finally, we compare the number of labels before and after applying our merging logic.</p>
+<section id="visualizing-group-distribution-across-records" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-group-distribution-across-records">Visualizing Group Distribution Across Records</h2>
+<p>Each record may contain multiple labels that belong to one or more groups. We first extract the unique groups for each record so that if multiple labels belong to the same group, they are only counted once. The bar plot below shows the distribution of records per group.</p>
+<div id="4829ad3d" class="cell" data-execution_count="8">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_unique_groups(label_metadata_list):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(label_metadata_list, <span class="bu">list</span>):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> []</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Use the "group" key and strip spaces; fallback to "Unknown" if missing.</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    groups <span class="op">=</span> [d.get(<span class="st">"group"</span>, <span class="st">"Unknown"</span>).strip() <span class="cf">for</span> d <span class="kw">in</span> label_metadata_list <span class="cf">if</span> d.get(<span class="st">"group"</span>) <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">list</span>(<span class="bu">set</span>(groups))</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>metadata_df[<span class="st">"unique_groups"</span>] <span class="op">=</span> metadata_df[<span class="st">"labels_metadata"</span>].<span class="bu">apply</span>(extract_unique_groups)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Explode the unique_groups list so that each record appears once per group</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>group_exploded <span class="op">=</span> metadata_df.explode(<span class="st">"unique_groups"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>group_counts <span class="op">=</span> group_exploded[<span class="st">"unique_groups"</span>].value_counts().reset_index()</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>group_counts.columns <span class="op">=</span> [<span class="st">"group"</span>, <span class="st">"record_count"</span>]</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>sns.barplot(x<span class="op">=</span><span class="st">"group"</span>, y<span class="op">=</span><span class="st">"record_count"</span>, data<span class="op">=</span>group_counts, palette<span class="op">=</span><span class="st">"Set2"</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribution of Records per Group"</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Group"</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Number of Records"</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>plt.grid(axis<span class="op">=</span><span class="st">"y"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-9-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-9-output-1.png" width="950" height="566" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="analyzing-group-combination-patterns" class="level2">
+<h2 class="anchored" data-anchor-id="analyzing-group-combination-patterns">Analyzing Group Combination Patterns</h2>
+<p>Next, we analyze the frequency of different group combinations within each record. For every record, we sort and store the unique groups as a tuple. This allows us to count how often each combination occurs.</p>
+<div id="0f5748a8" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>metadata_df[<span class="st">"group_combo"</span>] <span class="op">=</span> metadata_df[<span class="st">"unique_groups"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="bu">tuple</span>(<span class="bu">sorted</span>(x)))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>combo_counts <span class="op">=</span> metadata_df[<span class="st">"group_combo"</span>].value_counts().reset_index()</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>combo_counts.columns <span class="op">=</span> [<span class="st">"group_combination"</span>, <span class="st">"record_count"</span>]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>total_records <span class="op">=</span> <span class="bu">len</span>(metadata_df)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>combo_counts[<span class="st">"percentage"</span>] <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> combo_counts[<span class="st">"record_count"</span>] <span class="op">/</span> total_records</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Group Combination Frequencies (Top 10):"</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(combo_counts.head(<span class="dv">10</span>))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert tuple to string for more readable labels in the plot</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>combo_counts[<span class="st">"combo_str"</span>] <span class="op">=</span> combo_counts[<span class="st">"group_combination"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">" + "</span>.join(x))</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>sns.barplot(x<span class="op">=</span><span class="st">"record_count"</span>, y<span class="op">=</span><span class="st">"combo_str"</span>, data<span class="op">=</span>combo_counts.head(<span class="dv">15</span>), palette<span class="op">=</span><span class="st">"magma"</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Top 15 Group Combinations Across Records"</span>)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of Records"</span>)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Group Combination"</span>)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Group Combination Frequencies (Top 10):
+                           group_combination  record_count  percentage
+0                                  (Rhythm,)         23660   52.792467
+1                       (Morphology, Rhythm)          7850   17.515675
+2                        (Amplitude, Rhythm)          4080    9.103688
+3            (Amplitude, Morphology, Rhythm)          3672    8.193319
+4                         (Duration, Rhythm)          1866    4.163599
+5             (Duration, Morphology, Rhythm)          1423    3.175134
+6  (Amplitude, Duration, Morphology, Rhythm)           919    2.050561
+7              (Amplitude, Duration, Rhythm)           733    1.635540
+8                              (Morphology,)           371    0.827811
+9                     (Duration, Morphology)            75    0.167347</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-10-output-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-10-output-2.png" width="1140" height="758" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="within-record-label-patterns-same-group-vs.-multiple-groups" class="level2">
+<h2 class="anchored" data-anchor-id="within-record-label-patterns-same-group-vs.-multiple-groups">Within-Record Label Patterns: Same Group vs.&nbsp;Multiple Groups</h2>
+<p>Here, we compare the total number of labels per record (raw count) with the number of unique groups (after merging labels within the same group). This comparison highlights records where multiple labels within the same group have been merged.</p>
+<div id="93d9b8be" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Count total number of labels per record (raw, pre-merge)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>metadata_df[<span class="st">"total_labels"</span>] <span class="op">=</span> metadata_df[<span class="st">"labels_metadata"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> lst: <span class="bu">len</span>(lst) <span class="cf">if</span> <span class="bu">isinstance</span>(lst, <span class="bu">list</span>) <span class="cf">else</span> <span class="dv">0</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Count the number of unique groups per record (post merging)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>metadata_df[<span class="st">"num_unique_groups"</span>] <span class="op">=</span> metadata_df[<span class="st">"unique_groups"</span>].<span class="bu">apply</span>(<span class="bu">len</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># The difference indicates how many extra labels per record have been merged</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>metadata_df[<span class="st">"merging_applied"</span>] <span class="op">=</span> metadata_df.<span class="bu">apply</span>(<span class="kw">lambda</span> row: row[<span class="st">"total_labels"</span>] <span class="op">-</span> row[<span class="st">"num_unique_groups"</span>], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>same_group_count <span class="op">=</span> (metadata_df[<span class="st">"total_labels"</span>] <span class="op">==</span> metadata_df[<span class="st">"num_unique_groups"</span>]).<span class="bu">sum</span>()</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>multiple_groups_count <span class="op">=</span> (metadata_df[<span class="st">"total_labels"</span>] <span class="op">&gt;</span> metadata_df[<span class="st">"num_unique_groups"</span>]).<span class="bu">sum</span>()</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Records with all labels in different groups: </span><span class="sc">{</span>same_group_count<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Records with duplicate labels in the same group (merging candidates): </span><span class="sc">{</span>multiple_groups_count<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>sns.countplot(x<span class="op">=</span><span class="st">"num_unique_groups"</span>, data<span class="op">=</span>metadata_df, palette<span class="op">=</span><span class="st">"coolwarm"</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Number of Unique Groups per Record"</span>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Unique Groups Count"</span>)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Number of Records"</span>)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>plt.grid(axis<span class="op">=</span><span class="st">"y"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>sns.histplot(metadata_df[<span class="st">"merging_applied"</span>], bins<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, metadata_df[<span class="st">"merging_applied"</span>].<span class="bu">max</span>()<span class="op">+</span><span class="dv">2</span>), kde<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribution of Merging Events per Record"</span>)</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of Extra (Merged) Labels"</span>)</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Number of Records"</span>)</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>plt.grid(axis<span class="op">=</span><span class="st">"y"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="co"># In the subgroup merging logic, when a record has multiple labels in the same group,</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="co"># only one label is kept (either the most common or the alphabetically first label).</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Here, we quantify the effect of this logic by comparing the total raw labels (pre-merge)</span></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="co"># with the merged labels (unique groups per record) in so called "merging events".</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>total_raw_labels <span class="op">=</span> metadata_df[<span class="st">"total_labels"</span>].<span class="bu">sum</span>()</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>total_merged_labels <span class="op">=</span> metadata_df[<span class="st">"num_unique_groups"</span>].<span class="bu">sum</span>()</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total number of labels (raw, pre-merge):"</span>, total_raw_labels)</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total number of labels (after merging to unique groups):"</span>, total_merged_labels)</span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total number of merging events (labels removed):"</span>, total_raw_labels <span class="op">-</span> total_merged_labels)</span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>affected_records <span class="op">=</span> (metadata_df[<span class="st">"merging_applied"</span>] <span class="op">&gt;</span> <span class="dv">0</span>).<span class="bu">sum</span>()</span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Number of records affected by merging: </span><span class="sc">{</span>affected_records<span class="sc">}</span><span class="ss"> out of </span><span class="sc">{</span>total_records<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>(<span class="dv">100</span><span class="op">*</span>affected_records<span class="op">/</span>total_records)<span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizing the effect on a sample of records</span></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>sample_records <span class="op">=</span> metadata_df.sample(n<span class="op">=</span><span class="dv">50</span>, random_state<span class="op">=</span><span class="dv">42</span>).copy()</span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>sample_records <span class="op">=</span> sample_records.sort_index()</span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>plt.plot(sample_records.index, sample_records[<span class="st">"total_labels"</span>], <span class="st">"o-"</span>, label<span class="op">=</span><span class="st">"Raw Label Count"</span>, markersize<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>plt.plot(sample_records.index, sample_records[<span class="st">"num_unique_groups"</span>], <span class="st">"o-"</span>, label<span class="op">=</span><span class="st">"Unique Groups (After Merging)"</span>, markersize<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Comparison of Raw Label Count vs. Merged Label Count (Sample of Records)"</span>)</span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Record Index (Sampled)"</span>)</span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Label Count"</span>)</span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>plt.grid(axis<span class="op">=</span><span class="st">"y"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Records with all labels in different groups: 39130
+Records with duplicate labels in the same group (merging candidates): 5687</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-11-output-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-11-output-2.png" width="950" height="566" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-11-output-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-11-output-3.png" width="950" height="566" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total number of labels (raw, pre-merge): 81336
+Total number of labels (after merging to unique groups): 73224
+Total number of merging events (labels removed): 8112
+Number of records affected by merging: 5687 out of 44817 (12.69%)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-11-output-5.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-11-output-5.png" width="1142" height="566" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="heatmap-of-group-co-occurrence" class="level2">
+<h2 class="anchored" data-anchor-id="heatmap-of-group-co-occurrence">Heatmap of Group Co-occurrence</h2>
+<p>The heatmap below shows the normalized cross-correlation of group memberships. It displays the percentage of records that contain each pair of groups. For clarity, only the lower triangle of the matrix is shown.</p>
+<div id="30c2d1a4" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>all_groups <span class="op">=</span> <span class="bu">sorted</span>(<span class="bu">set</span>(grp <span class="cf">for</span> groups <span class="kw">in</span> metadata_df[<span class="st">"unique_groups"</span>] <span class="cf">for</span> grp <span class="kw">in</span> groups))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>co_occurrence <span class="op">=</span> pd.DataFrame(<span class="dv">0</span>, index<span class="op">=</span>all_groups, columns<span class="op">=</span>all_groups)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> groups <span class="kw">in</span> metadata_df[<span class="st">"unique_groups"</span>]:</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> g1 <span class="kw">in</span> groups:</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> g2 <span class="kw">in</span> groups:</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>            co_occurrence.loc[g1, g2] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize the co-occurrence counts to percentages (with respect to the total number of records)</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>co_occurrence_percent <span class="op">=</span> (co_occurrence <span class="op">/</span> <span class="bu">len</span>(metadata_df)) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a mask to hide the upper triangle of the heatmap</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> np.triu(np.ones_like(co_occurrence_percent, dtype<span class="op">=</span><span class="bu">bool</span>))</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>sns.heatmap(co_occurrence_percent, mask<span class="op">=</span>mask, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">".1f"</span>, cmap<span class="op">=</span><span class="st">"YlGnBu"</span>)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Normalized Heatmap of Group Co-occurrence (%)"</span>)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Group"</span>)</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Group"</span>)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-12-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-12-output-1.png" width="877" height="758" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="label-metadata-merging" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Label Metadata Merging</h1>
+<p>In many records, multiple labels may belong to the same group. To simplify the analysis and improve consistency, we merge these labels based on a defined logic. For each group, if multiple labels are present, the merging function selects either the most common label (if available) or the alphabetically first label (based on the integration code). The following function encapsulates this merging logic.</p>
+<div id="81504e7f" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This function encapsulates the merging logic for a record's labels.</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># For each group in the record, if multiple labels are present, it selects the most common label (if available)</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># or otherwise the alphabetically first label (based on the integration code).</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Additionally, it uses the first available diagnosis name (from the "diagnosis_names" list) as the readable label.</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># The function returns a dictionary mapping each group to a tuple (final_integration_code, final_readable_label).</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_readable_label(meta):</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Use the first diagnosis name if available; otherwise, fallback to the integration code.</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> meta.get(<span class="st">"diagnosis_names"</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">isinstance</span>(names, <span class="bu">list</span>) <span class="kw">and</span> <span class="bu">len</span>(names) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> names[<span class="dv">0</span>]</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> meta.get(<span class="st">"integration_code"</span>, <span class="st">"Unlabeled"</span>)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> merge_labels_for_record(label_metadata, most_common_label_by_group):</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co">    label_metadata: list of dictionaries, each containing keys 'group', 'integration_code', 'diagnosis_names'</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co">    most_common_label_by_group: dict mapping group -&gt; integration_code (most common across dataset)</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co">        dict: mapping group -&gt; (final_integration_code, final_readable_label)</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    group_to_labels <span class="op">=</span> {}</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> meta <span class="kw">in</span> label_metadata:</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>        group <span class="op">=</span> meta.get(<span class="st">"group"</span>, <span class="st">"Unknown"</span>).strip()</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>        code <span class="op">=</span> meta.get(<span class="st">"integration_code"</span>, <span class="st">"Unlabeled"</span>)</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>        readable <span class="op">=</span> get_readable_label(meta)</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>        group_to_labels.setdefault(group, {})</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Use a tuple (code, readable) to uniquely represent a label.</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>        group_to_labels[group][code] <span class="op">=</span> readable</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>    merged <span class="op">=</span> {}</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> group, labels <span class="kw">in</span> group_to_labels.items():</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># If the most common label is present, choose that.</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> most_common_label_by_group.get(group) <span class="kw">in</span> labels:</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>            chosen_code <span class="op">=</span> most_common_label_by_group[group]</span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>            chosen_readable <span class="op">=</span> labels[chosen_code]</span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Otherwise, choose the label with the alphabetically first integration code.</span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>            chosen_code <span class="op">=</span> <span class="bu">sorted</span>(labels.keys())[<span class="dv">0</span>]</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>            chosen_readable <span class="op">=</span> labels[chosen_code]</span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>        merged[group] <span class="op">=</span> (chosen_code, chosen_readable)</span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> merged</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="final-label-distribution-comparison-raw-vs.-merged" class="level2">
+<h2 class="anchored" data-anchor-id="final-label-distribution-comparison-raw-vs.-merged">Final Label Distribution Comparison (Raw vs.&nbsp;Merged)</h2>
+<p>Finally, we compare the raw label distributions with the final distributions after applying the merging logic. For each group, we normalize the counts to percentages and create side-by-side bar plots. This comparison helps illustrate the impact of the merging process on the dataset.</p>
+<div id="b2a6c94e" class="cell" data-execution_count="13">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>raw_label_counts <span class="op">=</span> {}</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, row <span class="kw">in</span> metadata_df.iterrows():</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> meta <span class="kw">in</span> row[<span class="st">"labels_metadata"</span>]:</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        group <span class="op">=</span> meta.get(<span class="st">"group"</span>, <span class="st">"Unknown"</span>).strip()</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Use the first diagnosis name as the readable label.</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        readable <span class="op">=</span> get_readable_label(meta)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        raw_label_counts.setdefault(group, {})</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        raw_label_counts[group][readable] <span class="op">=</span> raw_label_counts[group].get(readable, <span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Determine the most common integration code per group (based on raw counts) for merging logic.</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>most_common_label_by_group <span class="op">=</span> {}</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> group, counts <span class="kw">in</span> raw_label_counts.items():</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find the integration code corresponding to the highest count.</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Since raw_label_counts is keyed by readable label, we need to recover the integration code.</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For simplicity, we assume that the most common readable label corresponds uniquely to an integration code.</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># To ensure consistency, we iterate over the records again.</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    label_counter <span class="op">=</span> {}</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> idx, row <span class="kw">in</span> metadata_df.iterrows():</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> meta <span class="kw">in</span> row[<span class="st">"labels_metadata"</span>]:</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> meta.get(<span class="st">"group"</span>, <span class="st">"Unknown"</span>).strip() <span class="op">==</span> group:</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>                code <span class="op">=</span> meta.get(<span class="st">"integration_code"</span>, <span class="st">"Unlabeled"</span>)</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>                label_counter[code] <span class="op">=</span> label_counter.get(code, <span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> label_counter:</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>        most_common_label_by_group[group] <span class="op">=</span> <span class="bu">max</span>(label_counter, key<span class="op">=</span>label_counter.get)</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>        most_common_label_by_group[group] <span class="op">=</span> <span class="st">"Unlabeled"</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Now, simulate final (merged) label assignment across all records.</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>final_distribution <span class="op">=</span> {}</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, row <span class="kw">in</span> metadata_df.iterrows():</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    merged <span class="op">=</span> merge_labels_for_record(row[<span class="st">"labels_metadata"</span>], most_common_label_by_group)</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> group, (code, readable) <span class="kw">in</span> merged.items():</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>        final_distribution.setdefault(group, {})</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>        final_distribution[group][readable] <span class="op">=</span> final_distribution[group].get(readable, <span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>After computing the final label distributions, we plot side-by-side comparison plots for each group. The left plot shows the raw distribution, while the right plot displays the final distribution after merging.</p>
+<div id="06ab7c67" class="cell" data-execution_count="14">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For each group, create side-by-side comparison plots:</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Left: Raw distribution (normalized to percentage)</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Right: Final (merged) distribution (normalized to percentage)</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>groups_sorted <span class="op">=</span> <span class="bu">sorted</span>(raw_label_counts.keys())</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> group <span class="kw">in</span> groups_sorted:</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Prepare raw data: Convert counts to percentages.</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    raw_counts <span class="op">=</span> raw_label_counts.get(group, {})</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    total_raw <span class="op">=</span> <span class="bu">sum</span>(raw_counts.values())</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    raw_df <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"diagnosis"</span>: diag, <span class="st">"count"</span>: cnt, <span class="st">"percentage"</span>: (cnt <span class="op">/</span> total_raw) <span class="op">*</span> <span class="dv">100</span>}</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> diag, cnt <span class="kw">in</span> raw_counts.items()</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    ]).sort_values(<span class="st">"percentage"</span>, ascending<span class="op">=</span><span class="va">True</span>)  <span class="co"># sort ascending for horizontal barplot</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Prepare final data: Convert counts to percentages.</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    final_counts <span class="op">=</span> final_distribution.get(group, {})</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    total_final <span class="op">=</span> <span class="bu">sum</span>(final_counts.values())</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    final_df <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"diagnosis"</span>: diag, <span class="st">"count"</span>: cnt, <span class="st">"percentage"</span>: (cnt <span class="op">/</span> total_final) <span class="op">*</span> <span class="dv">100</span>}</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> diag, cnt <span class="kw">in</span> final_counts.items()</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    ]).sort_values(<span class="st">"percentage"</span>, ascending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">6</span>))</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot raw distribution using horizontal barplot</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    sns.barplot(x<span class="op">=</span><span class="st">"percentage"</span>, y<span class="op">=</span><span class="st">"diagnosis"</span>, data<span class="op">=</span>raw_df, ax<span class="op">=</span>axes[<span class="dv">0</span>], palette<span class="op">=</span><span class="st">"Blues_d"</span>, hue<span class="op">=</span><span class="st">'diagnosis'</span>)</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].set_title(<span class="ss">f"Raw Label Distribution for Group '</span><span class="sc">{</span>group<span class="sc">}</span><span class="ss">'"</span>)</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].set_xlabel(<span class="st">"Percentage (%)"</span>)</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].set_ylabel(<span class="st">"Diagnosis"</span>)</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].grid(axis<span class="op">=</span><span class="st">"x"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Annotate each bar with its percentage</span></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> patch <span class="kw">in</span> axes[<span class="dv">0</span>].patches:</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>        width <span class="op">=</span> patch.get_width()</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> patch.get_y() <span class="op">+</span> patch.get_height() <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>        axes[<span class="dv">0</span>].text(width <span class="op">+</span> <span class="fl">0.5</span>, y, <span class="ss">f'</span><span class="sc">{</span>width<span class="sc">:.1f}</span><span class="ss">%'</span>, va<span class="op">=</span><span class="st">'center'</span>, fontsize<span class="op">=</span><span class="dv">9</span>, color<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot final (merged) distribution using horizontal barplot</span></span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>    sns.barplot(x<span class="op">=</span><span class="st">"percentage"</span>, y<span class="op">=</span><span class="st">"diagnosis"</span>, data<span class="op">=</span>final_df, ax<span class="op">=</span>axes[<span class="dv">1</span>], palette<span class="op">=</span><span class="st">"Greens_d"</span>, hue<span class="op">=</span><span class="st">'diagnosis'</span>)</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].set_title(<span class="ss">f"Final Label Distribution for Group '</span><span class="sc">{</span>group<span class="sc">}</span><span class="ss">' (After Merging)"</span>)</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].set_xlabel(<span class="st">"Percentage (%)"</span>)</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].set_ylabel(<span class="st">""</span>)</span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].grid(axis<span class="op">=</span><span class="st">"x"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Annotate each bar with its percentage</span></span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> patch <span class="kw">in</span> axes[<span class="dv">1</span>].patches:</span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>        width <span class="op">=</span> patch.get_width()</span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> patch.get_y() <span class="op">+</span> patch.get_height() <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>        axes[<span class="dv">1</span>].text(width <span class="op">+</span> <span class="fl">0.5</span>, y, <span class="ss">f'</span><span class="sc">{</span>width<span class="sc">:.1f}</span><span class="ss">%'</span>, va<span class="op">=</span><span class="st">'center'</span>, fontsize<span class="op">=</span><span class="dv">9</span>, color<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>    plt.suptitle(<span class="ss">f"Label Distribution Comparison for Group '</span><span class="sc">{</span>group<span class="sc">}</span><span class="ss">'"</span>, fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout(rect<span class="op">=</span>[<span class="dv">0</span>, <span class="fl">0.03</span>, <span class="dv">1</span>, <span class="fl">0.95</span>])</span>
+<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-15-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-15-output-1.png" width="1563" height="552" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-15-output-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-15-output-2.png" width="1526" height="552" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-15-output-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-15-output-3.png" width="1570" height="552" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-15-output-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-15-output-4.png" width="1528" height="552" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="impact-of-label-merging-on-records-by-group" class="level2">
+<h2 class="anchored" data-anchor-id="impact-of-label-merging-on-records-by-group">Impact of Label Merging on Records by Group</h2>
+<p>In many records, multiple labels may fall into the same group. In our merging logic, if a record has more than one label for a given group, these labels are merged into a single representative label. In this section, we quantify the impact of this merging process on a per‐group basis. For each group, we compute the percentage of records that have multiple labels (and hence are impacted by merging) versus those that have only one label.</p>
+<p>The stacked bar plot below shows, for each group, the percentage of records where merging is applied (“Affected by Merging”) and those where no merging is needed (“No Merging”). The percentages are annotated on each bar segment. For clarification purposes, a record belong to a group if it has n &gt;= 1 labels for that group. If n &gt; 1, then merging is applied to obtain a single label. Thus, the “Affected by Merging” segment can also be looked at as the percentage of records where n &gt; 1.</p>
+<div id="73a94010" class="cell" data-execution_count="15">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to count the number of labels per group for a given record.</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> count_labels_by_group(label_metadata):</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    counts <span class="op">=</span> {}</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">isinstance</span>(label_metadata, <span class="bu">list</span>):</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> meta <span class="kw">in</span> label_metadata:</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>            group <span class="op">=</span> meta.get(<span class="st">"group"</span>, <span class="st">"Unknown"</span>).strip()</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>            counts[group] <span class="op">=</span> counts.get(group, <span class="dv">0</span>) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> counts</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co"># For each record, count how many labels exist for each group.</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>metadata_df[<span class="st">"group_label_counts"</span>] <span class="op">=</span> metadata_df[<span class="st">"labels_metadata"</span>].<span class="bu">apply</span>(count_labels_by_group)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co"># For each group, count records where merging is applied (more than one label) vs. not applied (exactly one label).</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>group_stats <span class="op">=</span> {}</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> idx, row <span class="kw">in</span> metadata_df.iterrows():</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    counts <span class="op">=</span> row[<span class="st">"group_label_counts"</span>]</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> group, count <span class="kw">in</span> counts.items():</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> group <span class="kw">not</span> <span class="kw">in</span> group_stats:</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>            group_stats[group] <span class="op">=</span> {<span class="st">"merged"</span>: <span class="dv">0</span>, <span class="st">"not_merged"</span>: <span class="dv">0</span>}</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> count <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>            group_stats[group][<span class="st">"merged"</span>] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>            group_stats[group][<span class="st">"not_merged"</span>] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the group statistics to a DataFrame for plotting.</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>group_stats_df <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">"group"</span>: group,</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">"merged"</span>: stats[<span class="st">"merged"</span>],</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">"not_merged"</span>: stats[<span class="st">"not_merged"</span>],</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>        <span class="st">"total"</span>: stats[<span class="st">"merged"</span>] <span class="op">+</span> stats[<span class="st">"not_merged"</span>]</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> group, stats <span class="kw">in</span> group_stats.items()</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate percentages for each group.</span></span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>group_stats_df[<span class="st">"pct_merged"</span>] <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> group_stats_df[<span class="st">"merged"</span>] <span class="op">/</span> group_stats_df[<span class="st">"total"</span>]</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>group_stats_df[<span class="st">"pct_not_merged"</span>] <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> group_stats_df[<span class="st">"not_merged"</span>] <span class="op">/</span> group_stats_df[<span class="st">"total"</span>]</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort groups for a cleaner plot.</span></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>group_stats_df <span class="op">=</span> group_stats_df.sort_values(<span class="st">"total"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a stacked bar plot to visualize the impact of merging by group.</span></span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the "No Merging" segment as the base.</span></span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>bars_not <span class="op">=</span> ax.bar(group_stats_df[<span class="st">"group"</span>], group_stats_df[<span class="st">"pct_not_merged"</span>],</span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>                  label<span class="op">=</span><span class="st">"No Merging"</span>, color<span class="op">=</span><span class="st">"skyblue"</span>)</span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the "Merging Applied" segment on top.</span></span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>bars_merge <span class="op">=</span> ax.bar(group_stats_df[<span class="st">"group"</span>], group_stats_df[<span class="st">"pct_merged"</span>],</span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>                    bottom<span class="op">=</span>group_stats_df[<span class="st">"pct_not_merged"</span>], label<span class="op">=</span><span class="st">"Affected by Merging"</span>, color<span class="op">=</span><span class="st">"salmon"</span>)</span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Percentage of Records in Group (%)"</span>)</span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Impact of Label Merging by Group"</span>)</span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a><span class="co"># Annotate bar segments with the percentage values.</span></span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> rect <span class="kw">in</span> bars_not:</span>
+<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a>    height <span class="op">=</span> rect.get_height()</span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> height <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a>        ax.text(rect.get_x() <span class="op">+</span> rect.get_width()<span class="op">/</span><span class="dv">2</span>, rect.get_y() <span class="op">+</span> height<span class="op">/</span><span class="dv">2</span>,</span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>height<span class="sc">:.1f}</span><span class="ss">%"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> rect, base <span class="kw">in</span> <span class="bu">zip</span>(bars_merge, group_stats_df[<span class="st">"pct_not_merged"</span>]):</span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a>    height <span class="op">=</span> rect.get_height()</span>
+<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> height <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a>        ax.text(rect.get_x() <span class="op">+</span> rect.get_width()<span class="op">/</span><span class="dv">2</span>, base <span class="op">+</span> height<span class="op">/</span><span class="dv">2</span>,</span>
+<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f"</span><span class="sc">{</span>height<span class="sc">:.1f}</span><span class="ss">%"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-16-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-16-output-1.png" width="950" height="566" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The plot shows the per-group impact of label merging with clear percentage annotations on each segment, allowing you to see the exact proportion of records that required merging versus those that did not. We can see that especially the “Morphology” group has a high percentage of records where merging was applied (about 25%). For the other groups the percentage is lower.</p>
+</section>
+<section id="comparison-of-label-combination-prevalence-raw-vs.-merged" class="level2">
+<h2 class="anchored" data-anchor-id="comparison-of-label-combination-prevalence-raw-vs.-merged">Comparison of Label Combination Prevalence: Raw vs.&nbsp;Merged</h2>
+<p>In addition to the per‐group merging impact, it is instructive to examine how label combination patterns change as a result of merging. In the raw data, a record may have duplicate group entries (e.g.&nbsp;<code>["A", "A", "B"]</code>), whereas after merging, each record contains only unique group labels (e.g.&nbsp;<code>["A", "B"]</code>). The following visualizations compare the prevalence of label combinations before and after merging.</p>
+<p>We create two new columns: one for the raw label combinations (including duplicates) and one for the merged (unique) combinations. To avoid issues with tuple-based categories, we convert each tuple into a string representation.</p>
+<div id="a7f00e81" class="cell" data-execution_count="16">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a raw combination by collecting all group entries (including duplicates) per record.</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>metadata_df[<span class="st">"raw_combo"</span>] <span class="op">=</span> metadata_df[<span class="st">"labels_metadata"</span>].<span class="bu">apply</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> lst: <span class="bu">tuple</span>(<span class="bu">sorted</span>([meta.get(<span class="st">"group"</span>, <span class="st">"Unknown"</span>).strip() <span class="cf">for</span> meta <span class="kw">in</span> lst]))</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># The merged combination is already computed as unique groups.</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>metadata_df[<span class="st">"merged_combo"</span>] <span class="op">=</span> metadata_df[<span class="st">"unique_groups"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="bu">tuple</span>(<span class="bu">sorted</span>(x)))</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the frequency counts for both raw and merged combinations.</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>raw_combo_counts <span class="op">=</span> metadata_df[<span class="st">"raw_combo"</span>].value_counts().reset_index()</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>raw_combo_counts.columns <span class="op">=</span> [<span class="st">"combo"</span>, <span class="st">"count"</span>]</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>merged_combo_counts <span class="op">=</span> metadata_df[<span class="st">"merged_combo"</span>].value_counts().reset_index()</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>merged_combo_counts.columns <span class="op">=</span> [<span class="st">"combo"</span>, <span class="st">"count"</span>]</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create string representations for the combinations.</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>raw_combo_counts[<span class="st">"combo_str"</span>] <span class="op">=</span> raw_combo_counts[<span class="st">"combo"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">" + "</span>.join(x) <span class="cf">if</span> <span class="bu">isinstance</span>(x, <span class="bu">tuple</span>) <span class="cf">else</span> <span class="bu">str</span>(x))</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>merged_combo_counts[<span class="st">"combo_str"</span>] <span class="op">=</span> merged_combo_counts[<span class="st">"combo"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="st">" + "</span>.join(x) <span class="cf">if</span> <span class="bu">isinstance</span>(x, <span class="bu">tuple</span>) <span class="cf">else</span> <span class="bu">str</span>(x))</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate percentages with respect to the total number of records.</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>total_records <span class="op">=</span> <span class="bu">len</span>(metadata_df)</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>raw_combo_counts[<span class="st">"percentage"</span>] <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> raw_combo_counts[<span class="st">"count"</span>] <span class="op">/</span> total_records</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>merged_combo_counts[<span class="st">"percentage"</span>] <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> merged_combo_counts[<span class="st">"count"</span>] <span class="op">/</span> total_records</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The side-by-side horizontal bar plots below show the top 10 most common label combinations before merging (raw) and after merging. Each bar is annotated with the percentage of records that have that combination.</p>
+<div id="0cb54425" class="cell" data-execution_count="17">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">8</span>), sharey<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot raw combination frequencies.</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>sns.barplot(x<span class="op">=</span><span class="st">"percentage"</span>, y<span class="op">=</span><span class="st">"combo_str"</span>, data<span class="op">=</span>raw_combo_counts.head(<span class="dv">10</span>),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>            ax<span class="op">=</span>axes[<span class="dv">0</span>], palette<span class="op">=</span><span class="st">"Blues_d"</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Top 10 Label Combinations (Raw)"</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">"Percentage of Records (%)"</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"Label Combination"</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p <span class="kw">in</span> axes[<span class="dv">0</span>].patches:</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    width <span class="op">=</span> p.get_width()</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">0</span>].text(width <span class="op">+</span> <span class="fl">0.5</span>, p.get_y() <span class="op">+</span> p.get_height()<span class="op">/</span><span class="dv">2</span>,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>                 <span class="ss">f"</span><span class="sc">{</span>width<span class="sc">:.1f}</span><span class="ss">%"</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot merged combination frequencies.</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>sns.barplot(x<span class="op">=</span><span class="st">"percentage"</span>, y<span class="op">=</span><span class="st">"combo_str"</span>, data<span class="op">=</span>merged_combo_counts.head(<span class="dv">10</span>),</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>            ax<span class="op">=</span>axes[<span class="dv">1</span>], palette<span class="op">=</span><span class="st">"Greens_d"</span>)</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"Top 10 Label Combinations (After Merging)"</span>)</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">"Percentage of Records (%)"</span>)</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">""</span>)</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p <span class="kw">in</span> axes[<span class="dv">1</span>].patches:</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    width <span class="op">=</span> p.get_width()</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>    axes[<span class="dv">1</span>].text(width <span class="op">+</span> <span class="fl">0.5</span>, p.get_y() <span class="op">+</span> p.get_height()<span class="op">/</span><span class="dv">2</span>,</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>                 <span class="ss">f"</span><span class="sc">{</span>width<span class="sc">:.1f}</span><span class="ss">%"</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>plt.suptitle(<span class="st">"Comparison of Label Combination Prevalence: Raw vs. Merged"</span>, fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>plt.tight_layout(rect<span class="op">=</span>[<span class="dv">0</span>, <span class="fl">0.03</span>, <span class="dv">1</span>, <span class="fl">0.95</span>])</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-18-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-18-output-1.png" width="1525" height="734" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The plots show the top 10 most common label combinations before and after merging. The annotations on each bar segment provide a clear view of the percentage of records that have that combination. The merging process has effectively has left the set of labels per record as expected with unique group labels.</p>
+</section>
+<section id="diagnosis-co-occurrence-heatmaps-using-diagnosis-names" class="level2">
+<h2 class="anchored" data-anchor-id="diagnosis-co-occurrence-heatmaps-using-diagnosis-names">Diagnosis Co-occurrence Heatmaps (Using Diagnosis Names)</h2>
+<p>In addition to the previous visualizations based on group names, we now examine how diagnosis names co-occur across records. Because each label’s metadata may contain multiple diagnosis names, we define a helper function that combines them into a single string (separated by <code>" / "</code>). We then compute two heatmaps: - One for the <strong>raw diagnosis names</strong> (from all labels per record), and<br>
+- One for the <strong>merged diagnosis names</strong> (after applying our merging logic).</p>
+<section id="raw-diagnosis-co-occurrence-heatmap" class="level3">
+<h3 class="anchored" data-anchor-id="raw-diagnosis-co-occurrence-heatmap">Raw Diagnosis Co-occurrence Heatmap</h3>
+<p>For the raw data, we extract the diagnosis name from each label and compute a co-occurrence matrix counting, for every pair of diagnosis names, in how many records they appear together.</p>
+<div id="28aa7d03" class="cell" data-execution_count="18">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a helper function to combine diagnosis names from a label's metadata.</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> combined_diagnosis(meta):</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> meta.get(<span class="st">"diagnosis_names"</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">isinstance</span>(names, <span class="bu">list</span>) <span class="kw">and</span> <span class="bu">len</span>(names) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">" / "</span>.join(<span class="bu">sorted</span>(<span class="bu">set</span>(names)))</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> meta.get(<span class="st">"integration_code"</span>, <span class="st">"Unlabeled"</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co"># For each record, compute the set of raw diagnosis names.</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>raw_diagnosis_sets <span class="op">=</span> metadata_df[<span class="st">"labels_metadata"</span>].<span class="bu">apply</span>(</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> lst: <span class="bu">set</span>([combined_diagnosis(meta) <span class="cf">for</span> meta <span class="kw">in</span> lst]) <span class="cf">if</span> <span class="bu">isinstance</span>(lst, <span class="bu">list</span>) <span class="cf">else</span> <span class="bu">set</span>()</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all unique diagnosis names from raw data.</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>all_raw_diagnoses <span class="op">=</span> <span class="bu">sorted</span>({d <span class="cf">for</span> ds <span class="kw">in</span> raw_diagnosis_sets <span class="cf">for</span> d <span class="kw">in</span> ds})</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the co-occurrence matrix.</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>raw_co_occurrence <span class="op">=</span> pd.DataFrame(<span class="dv">0</span>, index<span class="op">=</span>all_raw_diagnoses, columns<span class="op">=</span>all_raw_diagnoses)</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Populate the matrix: for each record, for each pair of diagnosis names, increment the count.</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ds <span class="kw">in</span> raw_diagnosis_sets:</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> d1 <span class="kw">in</span> ds:</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> d2 <span class="kw">in</span> ds:</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>            raw_co_occurrence.loc[d1, d2] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>sns.heatmap(raw_co_occurrence, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">"d"</span>, cmap<span class="op">=</span><span class="st">"YlGnBu"</span>)</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Raw Diagnosis Co-occurrence Heatmap (Counts)"</span>)</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Diagnosis Name"</span>)</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Diagnosis Name"</span>)</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-19-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-19-output-1.png" width="1117" height="945" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="merged-diagnosis-co-occurrence-heatmap" class="level3">
+<h3 class="anchored" data-anchor-id="merged-diagnosis-co-occurrence-heatmap">Merged Diagnosis Co-occurrence Heatmap</h3>
+<p>For the merged labels, each record has at most one label per group. We use our previously defined merging function (<code>merge_labels_for_record</code>) and the dictionary <code>most_common_label_by_group</code> (computed earlier) to obtain the merged labels. Then, we extract the diagnosis names from these merged results and compute their co-occurrence counts.</p>
+<div id="033810ab" class="cell" data-execution_count="19">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute merged labels for each record (if not already computed).</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>metadata_df[<span class="st">"merged_labels"</span>] <span class="op">=</span> metadata_df[<span class="st">"labels_metadata"</span>].<span class="bu">apply</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> lst: merge_labels_for_record(lst, most_common_label_by_group) <span class="cf">if</span> <span class="bu">isinstance</span>(lst, <span class="bu">list</span>) <span class="cf">else</span> {}</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co"># For each record, extract the set of merged diagnosis names.</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>merged_diagnosis_sets <span class="op">=</span> metadata_df[<span class="st">"merged_labels"</span>].<span class="bu">apply</span>(</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> d: <span class="bu">set</span>(val[<span class="dv">1</span>] <span class="cf">for</span> val <span class="kw">in</span> d.values())</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all unique merged diagnosis names.</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>all_merged_diagnoses <span class="op">=</span> <span class="bu">sorted</span>({d <span class="cf">for</span> ds <span class="kw">in</span> merged_diagnosis_sets <span class="cf">for</span> d <span class="kw">in</span> ds})</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the merged co-occurrence matrix.</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>merged_co_occurrence <span class="op">=</span> pd.DataFrame(<span class="dv">0</span>, index<span class="op">=</span>all_merged_diagnoses, columns<span class="op">=</span>all_merged_diagnoses)</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Populate the matrix for merged diagnosis names.</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ds <span class="kw">in</span> merged_diagnosis_sets:</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> d1 <span class="kw">in</span> ds:</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> d2 <span class="kw">in</span> ds:</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>            merged_co_occurrence.loc[d1, d2] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>sns.heatmap(merged_co_occurrence, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">"d"</span>, cmap<span class="op">=</span><span class="st">"YlGnBu"</span>)</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Merged Diagnosis Co-occurrence Heatmap (Counts)"</span>)</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Diagnosis Name"</span>)</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Diagnosis Name"</span>)</span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-20-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-20-output-1.png" width="1104" height="947" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="c449b61a" class="cell" data-execution_count="20">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Diagnosis Co-occurrence Heatmaps (Using Diagnosis Names) by Group</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get list of all groups from the label metadata in the dataset.</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>all_groups <span class="op">=</span> <span class="bu">sorted</span>({meta.get(<span class="st">"group"</span>, <span class="st">"Unknown"</span>).strip() </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>                     <span class="cf">for</span> lst <span class="kw">in</span> metadata_df[<span class="st">"labels_metadata"</span>] <span class="cf">if</span> <span class="bu">isinstance</span>(lst, <span class="bu">list</span>) </span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>                     <span class="cf">for</span> meta <span class="kw">in</span> lst})</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a helper function to combine diagnosis names from a label's metadata.</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> combined_diagnosis(meta):</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    names <span class="op">=</span> meta.get(<span class="st">"diagnosis_names"</span>)</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">isinstance</span>(names, <span class="bu">list</span>) <span class="kw">and</span> <span class="bu">len</span>(names) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Combine multiple diagnosis names with a separator.</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">" / "</span>.join(<span class="bu">sorted</span>(<span class="bu">set</span>(names)))</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> meta.get(<span class="st">"integration_code"</span>, <span class="st">"Unlabeled"</span>)</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop over each group and compute separate heatmaps for raw and merged diagnosis co-occurrence.</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> grp <span class="kw">in</span> all_groups:</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">### RAW Diagnosis Co-occurrence for Group: grp</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For each record, extract diagnosis names from raw labels that belong to the current group.</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    raw_diag_sets <span class="op">=</span> metadata_df[<span class="st">"labels_metadata"</span>].<span class="bu">apply</span>(</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>        <span class="kw">lambda</span> lst: <span class="bu">set</span>([combined_diagnosis(meta) </span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>                         <span class="cf">for</span> meta <span class="kw">in</span> lst </span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>                         <span class="cf">if</span> meta.get(<span class="st">"group"</span>, <span class="st">"Unknown"</span>).strip() <span class="op">==</span> grp]) </span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> <span class="bu">isinstance</span>(lst, <span class="bu">list</span>) <span class="cf">else</span> <span class="bu">set</span>()</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Filter out records that don't have any diagnosis for this group.</span></span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>    raw_diag_sets <span class="op">=</span> raw_diag_sets[raw_diag_sets.<span class="bu">apply</span>(<span class="kw">lambda</span> s: <span class="bu">len</span>(s) <span class="op">&gt;</span> <span class="dv">0</span>)]</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get all unique diagnosis names for this group.</span></span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>    unique_raw_diag <span class="op">=</span> <span class="bu">sorted</span>({d <span class="cf">for</span> s <span class="kw">in</span> raw_diag_sets <span class="cf">for</span> d <span class="kw">in</span> s})</span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize the co-occurrence matrix for raw diagnosis names.</span></span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>    raw_co_occ <span class="op">=</span> pd.DataFrame(<span class="dv">0</span>, index<span class="op">=</span>unique_raw_diag, columns<span class="op">=</span>unique_raw_diag)</span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Populate the matrix: for each record, increment counts for every pair of diagnosis names that co-occur.</span></span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> diag_set <span class="kw">in</span> raw_diag_sets:</span>
+<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> d1 <span class="kw">in</span> diag_set:</span>
+<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> d2 <span class="kw">in</span> diag_set:</span>
+<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>                raw_co_occ.loc[d1, d2] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot the heatmap for raw diagnosis co-occurrence for this group.</span></span>
+<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a>    sns.heatmap(raw_co_occ, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">"d"</span>, cmap<span class="op">=</span><span class="st">"YlGnBu"</span>)</span>
+<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"Raw Diagnosis Co-occurrence Heatmap for Group: </span><span class="sc">{</span>grp<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb25-46"><a href="#cb25-46" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Diagnosis Name"</span>)</span>
+<span id="cb25-47"><a href="#cb25-47" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">"Diagnosis Name"</span>)</span>
+<span id="cb25-48"><a href="#cb25-48" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb25-49"><a href="#cb25-49" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb25-50"><a href="#cb25-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-51"><a href="#cb25-51" aria-hidden="true" tabindex="-1"></a>    <span class="co">### Merged Diagnosis Co-occurrence for Group: grp</span></span>
+<span id="cb25-52"><a href="#cb25-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For merged labels, each record has at most one label per group.</span></span>
+<span id="cb25-53"><a href="#cb25-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract the merged diagnosis name for the current group.</span></span>
+<span id="cb25-54"><a href="#cb25-54" aria-hidden="true" tabindex="-1"></a>    merged_diag <span class="op">=</span> metadata_df[<span class="st">"merged_labels"</span>].<span class="bu">apply</span>(</span>
+<span id="cb25-55"><a href="#cb25-55" aria-hidden="true" tabindex="-1"></a>        <span class="kw">lambda</span> d: d.get(grp, (<span class="va">None</span>, <span class="va">None</span>))[<span class="dv">1</span>] <span class="cf">if</span> <span class="bu">isinstance</span>(d, <span class="bu">dict</span>) <span class="kw">and</span> grp <span class="kw">in</span> d <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb25-56"><a href="#cb25-56" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb25-57"><a href="#cb25-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Keep only non-None values.</span></span>
+<span id="cb25-58"><a href="#cb25-58" aria-hidden="true" tabindex="-1"></a>    merged_diag <span class="op">=</span> merged_diag.dropna()</span>
+<span id="cb25-59"><a href="#cb25-59" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-60"><a href="#cb25-60" aria-hidden="true" tabindex="-1"></a>    <span class="co"># In merged labels, since each record contributes only one diagnosis per group,</span></span>
+<span id="cb25-61"><a href="#cb25-61" aria-hidden="true" tabindex="-1"></a>    <span class="co"># the co-occurrence matrix will be diagonal (each record only "co-occurs" with itself).</span></span>
+<span id="cb25-62"><a href="#cb25-62" aria-hidden="true" tabindex="-1"></a>    unique_merged_diag <span class="op">=</span> merged_diag.unique()</span>
+<span id="cb25-63"><a href="#cb25-63" aria-hidden="true" tabindex="-1"></a>    merged_counts <span class="op">=</span> merged_diag.value_counts().sort_index()</span>
+<span id="cb25-64"><a href="#cb25-64" aria-hidden="true" tabindex="-1"></a>    merged_co_occ <span class="op">=</span> pd.DataFrame(<span class="dv">0</span>, index<span class="op">=</span>unique_merged_diag, columns<span class="op">=</span>unique_merged_diag)</span>
+<span id="cb25-65"><a href="#cb25-65" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> diag <span class="kw">in</span> unique_merged_diag:</span>
+<span id="cb25-66"><a href="#cb25-66" aria-hidden="true" tabindex="-1"></a>        merged_co_occ.loc[diag, diag] <span class="op">=</span> merged_counts[diag]</span>
+<span id="cb25-67"><a href="#cb25-67" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-68"><a href="#cb25-68" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot the heatmap for merged diagnosis co-occurrence for this group.</span></span>
+<span id="cb25-69"><a href="#cb25-69" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb25-70"><a href="#cb25-70" aria-hidden="true" tabindex="-1"></a>    sns.heatmap(merged_co_occ, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">"d"</span>, cmap<span class="op">=</span><span class="st">"YlGnBu"</span>)</span>
+<span id="cb25-71"><a href="#cb25-71" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"Merged Diagnosis Co-occurrence Heatmap for Group: </span><span class="sc">{</span>grp<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb25-72"><a href="#cb25-72" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Diagnosis Name"</span>)</span>
+<span id="cb25-73"><a href="#cb25-73" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">"Diagnosis Name"</span>)</span>
+<span id="cb25-74"><a href="#cb25-74" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb25-75"><a href="#cb25-75" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-1.png" width="776" height="562" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-2.png" width="790" height="562" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-3.png" width="796" height="562" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-23"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-4.png" width="741" height="563" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-5.png" class="lightbox" data-gallery="quarto-lightbox-gallery-24"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-5.png" width="841" height="562" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-25"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-6.png" width="797" height="563" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-7.png" class="lightbox" data-gallery="quarto-lightbox-gallery-26"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-7.png" width="849" height="561" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-8.png" class="lightbox" data-gallery="quarto-lightbox-gallery-27"><img src="dataset_ecg_arrhythmia_files/figure-html/cell-21-output-8.png" width="751" height="563" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/digital-garden-ipole-bat-defe3df969a524a173991f9eabea11962cf78d\.pages\.fhnw\.ch\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./dataset_cmr_acdc.html" class="pagination-link" aria-label="Dataset - Automated Cardiac Diagnosis Challenge (ACDC)">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Dataset - Automated Cardiac Diagnosis Challenge (ACDC)</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./phase1.html" class="pagination-link" aria-label="Evaluation 1: Embedding Space Analysis (Pre-trained vs Fine-tuned)">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Evaluation 1: Embedding Space Analysis (Pre-trained vs Fine-tuned)</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>ECG and CMR Unimodal Representation Learning</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"loop":false,"selector":".lightbox","descPosition":"bottom","openEffect":"zoom","closeEffect":"zoom"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

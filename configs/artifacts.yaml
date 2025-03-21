@@ -1,0 +1,25 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - paths: default
+  - trainer: default
+  - modality: ???
+  - data: ???
+  - model: ???
+  - hydra: default
+  - experiment: ???
+
+task_name: "generate_artifacts"
+
+seed: 2022
+
+splits:
+  - train
+  - val
+  - test
+
+record_id: null
+
+accelerator: null
+ckpt_path: ???

@@ -1,0 +1,230 @@
+---
+title: Dataset - Automated Cardiac Diagnosis Challenge (ACDC)
+jupyter: python3
+lightbox: true
+---
+
+The [ACDC dataset](https://www.creatis.insa-lyon.fr/Challenge/acdc/databases.html) is part of the Automated Cardiac Diagnosis Challenge, which provides comprehensive MRI data for studying cardiac function across several patient groups.
+
+The ACDC dataset was created from real clinical exams acquired at the [University Hospital of Dijon](https://www.chu-dijon.fr/), France. The data is fully anonymized and complies with the local ethical regulations set by the hospital's ethical committee. The dataset captures several well-defined pathologies and provides enough cases to properly train machine learning models, as well as assess variations in key physiological parameters obtained from cine-MRI, such as **diastolic volume** and **ejection fraction**. 
+
+The dataset is composed of **150 exams** (each from a different patient) divided into **five evenly distributed subgroups** (four pathological groups and one healthy subject group). Each patient record also contains additional metadata like **weight, height**, and details regarding the **diastolic and systolic phases**.
+
+### Study Population
+
+The dataset includes **150 patients**, categorized into the following five subgroups:
+
+1. **Normal subjects (NOR)** - 30 patients without known pathologies.
+2. **Myocardial Infarction (MINF)** - 30 patients with left ventricular ejection fraction below 40% and abnormal contraction in several myocardial segments.
+3. **Dilated Cardiomyopathy (DCM)** - 30 patients with an enlarged left ventricular volume (>100 mL/m²) and reduced ejection fraction (below 40%).
+4. **Hypertrophic Cardiomyopathy (HCM)** - 30 patients with increased left ventricular mass (>110 g/m²), thickened myocardial segments (>15 mm in diastole), but with normal ejection fraction.
+5. **Abnormal Right Ventricle (RV)** - 30 patients with either enlarged right ventricular volume (>110 mL/m²) or an ejection fraction of the right ventricle lower than 40%.
+
+The groups are defined based on physiological parameters, such as **ventricular volumes**, **ejection fractions**, **local contractions**, **LV mass**, and the **maximum thickness** of the myocardium. The classification rules can be found in more detail in the relevant tab.
+
+### Involved Systems
+
+The MRI acquisitions were conducted over a six-year period using **two MRI scanners** with different magnetic field strengths:
+
+- **1.5 T (Siemens Area, Siemens Medical Solutions, Germany)**
+- **3.0 T (Siemens Trio Tim, Siemens Medical Solutions, Germany)**
+
+Images were acquired in a **short-axis orientation**, covering the left ventricle from base to apex, with slice thicknesses of either **5 mm** or **8 mm**. The **spatial resolution** ranges between **1.37 to 1.68 mm²/pixel**, and **28 to 40 images** were taken to capture the complete or nearly complete cardiac cycle.
+
+O. Bernard, A. Lalande, C. Zotti, F. Cervenansky, et al.  
+"Deep Learning Techniques for Automatic MRI Cardiac Multi-structures Segmentation and Diagnosis: Is the Problem Solved?"  
+IEEE Transactions on Medical Imaging, vol. 37, no. 11, pp. 2514-2525, Nov. 2018.  
+doi: 10.1109/TMI.2018.2837502
+
+## Loading the CMR Dataset
+
+```{python}
+import sys
+import os
+from pathlib import Path
+
+project_root = str(Path().absolute().parent.parent)
+sys.path.append(project_root)
+
+# unified dataset
+from src.data.unified import UnifiedDataset
+from src.data.dataset import DatasetModality
+from src.visualization.cmr_viz import plot_processed_sample, plot_raw_sample, create_cardiac_cycle_animation
+
+data_root = Path(project_root) / "data"
+```
+
+Let's explore the ACDC dataset and take a closer look at its content.
+
+```{python}
+acdc_data = UnifiedDataset(data_root, modality=DatasetModality.CMR, dataset_key="acdc")
+acdc_data = acdc_data.raw_dataset
+
+# Load first patient data
+patient_record = acdc_data.load_record("patient001")
+
+# Create patient data dictionary with all available metadata
+patient_data = {
+    "data": patient_record.data,
+    "id": patient_record.id,
+    "group": patient_record.target_labels,
+    "ed_frame_idx": patient_record.metadata["ed_frame_idx"],
+    "mid_frame_idx": patient_record.metadata["mid_frame_idx"],
+    "es_frame_idx": patient_record.metadata["es_frame_idx"]
+}
+
+# Print metadata
+print("\nPatient Metadata:")
+for key, value in patient_record.metadata.items():
+    print(f"{key}: {value}")
+```
+
+The dataset includes cardiac MRI data from multiple patients, each accompanied by relevant metadata. Here, we are focusing on one patient to get started.
+
+## Visualizing Key Cardiac Frames
+
+We begin by examining the three key frames in the cardiac cycle: End-Diastolic (ED), Mid-Phase, and End-Systolic (ES).
+
+```{python}
+#| label: fig-key-frames
+#| fig-cap: "Key cardiac frames showing ED, Mid-Phase, and ES states."
+
+import matplotlib.pyplot as plt
+
+fig1 = plot_processed_sample(
+    data=patient_data["data"],
+    title=f'Patient {patient_data["id"]} - {patient_data["group"]}'
+)
+plt.show()
+```
+
+The visualization in @fig-key-frames shows the heart's state at three critical phases. These states provide important snapshots of the heart's activity, giving insights into its pumping function.
+
+## Visualizing the Sequence of Frames
+
+Since our data contains only three frames (ED, Mid-Phase, and ES), we can visualize them sequentially to observe the changes.
+
+```{python}
+#| label: fig-sequence
+#| fig-cap: "Sequential visualization of cardiac phases"
+
+fig2 = plot_raw_sample(
+    data=acdc_data._read_nifti(acdc_data.paths["raw"] / patient_record.metadata['nifti_path']),
+    frame_indices=[
+        patient_record.metadata["ed_frame_idx"],
+        patient_record.metadata["mid_frame_idx"],
+        patient_record.metadata["es_frame_idx"]
+    ],
+    title=f'Patient {patient_data["id"]} - Cardiac Phases'
+)
+plt.show()
+```
+
+This sequence shown in @fig-sequence represents the heart's movement through the key phases. Observing these frames in order reveals the changing shape and size of the heart chambers, which is vital for understanding cardiac function.
+
+::: {.content-visible when-format="html"}
+## Animated Visualization
+
+For an even clearer picture of how the heart changes across these phases, let's create an animated version.
+
+```{python}
+#| label: fig-animation
+#| fig-cap: "Animated visualization of cardiac cycle"
+
+from IPython.display import display, HTML
+
+html = create_cardiac_cycle_animation(
+    data=acdc_data._read_nifti(acdc_data.paths["raw"] / patient_record.metadata['nifti_path']),
+    frame_indices=[
+        patient_record.metadata["ed_frame_idx"],
+        patient_record.metadata["mid_frame_idx"],
+        patient_record.metadata["es_frame_idx"]
+    ]
+)
+display(HTML(html))
+```
+
+The animated GIF in @fig-animation shows the heart transitioning through the ED, Mid-Phase, and ES frames, providing a clear and intuitive representation of its movement. This animation is especially helpful for understanding the coordinated action of different heart regions as they expand and contract.
+:::
+
+## Cropping based on Turgut Biobank
+
+The Turgut Biobank paper implements a custom manual cropping strategy with hard-coded values designed for their specific dataset. While this approach provides a standardized way to focus on cardiac regions, these fixed parameters may not be optimal for our ACDC dataset due to potential differences in image acquisition, patient positioning, and cardiac anatomical variations. Let's implement and evaluate this cropping approach across our key cardiac frames.
+
+```{python}
+#| label: fig-cropping
+#| fig-cap: "Comparison of original and Turgut-cropped cardiac images across ED, Mid, and ES frames"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def apply_turgut_crop(image, img_size):
+    """Apply Turgut Biobank cropping parameters to numpy array"""
+    top = int(0.21 * img_size)
+    left = int(0.325 * img_size)
+    height = width = int(0.375 * img_size)
+    
+    # Ensure the image is large enough for cropping
+    if image.shape[0] < top + height or image.shape[1] < left + width:
+        raise ValueError("Image too small for specified crop dimensions")
+        
+    return image[top:top+height, left:left+width]
+
+def normalize_image(img):
+    """Normalize image to 0-1 range"""
+    return (img - img.min()) / (img.max() - img.min())
+
+# Get the NIFTI data and relevant frames
+original_data = acdc_data._read_nifti(acdc_data.paths["raw"] / patient_record.metadata['nifti_path'])
+frames = [
+    patient_record.metadata["ed_frame_idx"],
+    patient_record.metadata["mid_frame_idx"],
+    patient_record.metadata["es_frame_idx"]
+]
+frame_names = ['ED', 'Mid', 'ES']
+mid_slice = original_data.shape[2] // 2
+
+# Create figure with three pairs of images
+fig, axes = plt.subplots(3, 2, figsize=(10, 15))
+fig.suptitle('Original vs Turgut Cropped Images', fontsize=14)
+
+# Process each frame
+for idx, (frame, name) in enumerate(zip(frames, frame_names)):
+    img = original_data[:, :, mid_slice, frame]
+    img = normalize_image(img)
+    
+    try:
+        cropped_img = apply_turgut_crop(img, img.shape[0])
+        
+        # Plot original
+        axes[idx, 0].imshow(img, cmap='gray')
+        axes[idx, 0].set_title(f'Original - {name}')
+        axes[idx, 0].axis('off')
+        
+        # Plot cropped
+        axes[idx, 1].imshow(cropped_img, cmap='gray')
+        axes[idx, 1].set_title(f'Turgut Cropped - {name}')
+        axes[idx, 1].axis('off')
+        
+    except ValueError as e:
+        print(f"Error processing {name} frame: {e}")
+
+plt.tight_layout()
+plt.show()
+
+# Print crop dimensions for reference
+img_size = img.shape[0]
+print(f"Original size: {img.shape}")
+print(f"Cropped size: {cropped_img.shape}")
+print(f"\nTurgut cropping parameters:")
+print(f"Top: {int(0.21 * img_size)} pixels")
+print(f"Left: {int(0.325 * img_size)} pixels")
+print(f"Height/Width: {int(0.375 * img_size)} pixels")
+```
+
+The Turgut Biobank cropping uses fixed relative parameters to focus on the central region of the heart:
+- Starting at 21% from the top
+- Starting at 32.5% from the left
+- Taking a square region that is 37.5% of the original image size
+
+By examining all three cardiac phases (ED, Mid, ES), we can better evaluate whether these fixed cropping parameters consistently capture the relevant cardiac structures in our ACDC dataset. This analysis helps determine if we need to adjust these parameters for our specific use case.

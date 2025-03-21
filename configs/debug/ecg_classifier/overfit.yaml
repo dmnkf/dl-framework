@@ -1,0 +1,23 @@
+# @package _global_
+
+defaults:
+  - default
+  - override /model: ecg_classifier
+  - override /modality: ${data}/arrhythmia
+  - override /data: ecg
+  - override /logger: tensorboard
+
+data:
+  downstream: true
+
+model:
+  warmup_epochs: 5
+  pretrained_weights: null
+  smoothing: 0.0
+  weight_decay: 0.0
+  layer_decay: 0.0
+  drop_path_rate: 0.0
+
+trainer:
+  max_epochs: 100
+  overfit_batches: 1

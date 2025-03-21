@@ -1,0 +1,40 @@
+# Version control
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+
+# Virtual Environment
+.env
+.venv/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Project specific
+data/
+logs/
+outputs/
+model_weights/
+lightning_logs/
+wandb/
+.neptune/
+embeddings/
+
+# Temporary files
+.DS_Store
+*.log 

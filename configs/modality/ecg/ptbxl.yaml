@@ -1,0 +1,9 @@
+dataset_key: ptbxl
+
+input_channels: 1
+input_electrodes: 12
+time_steps: 2500
+
+num_classes: 20
+
+task_type: multilabel

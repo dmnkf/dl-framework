@@ -1,0 +1,84 @@
+site_name: Aether
+site_description: A pipeline for ECG and CMR deep learning
+repo_url: https://gitlab.fhnw.ch/ipole-bat/projection
+
+watch:
+  - src
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [src/, .]  # This tells mkdocstrings where to look for your Python modules
+          options:
+            show_source: true
+            show_root_heading: true
+            heading_level: 2
+          import:
+            - https://docs.python.org/3/objects.inv  # For standard library
+            - https://pytorch.org/docs/stable/objects.inv  # For PyTorch
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Configuration: getting-started/configuration.md
+  - Data Pipeline:
+    - Dataset Integration: data/datasets.md
+    - Data Management: data/data-management.md
+    - Preprocessing Pipeline: data/preprocessing.md
+  - Model Development:
+    - Model Architectures: models/architectures.md
+    - Training Process: models/training.md
+    - Analysis:
+      - Model Artifacts: models/analysis/model-artifacts.md
+      - Embedding Visualization: models/analysis/embedding-visualization.md
+  - Development Guide:
+    - Development Tools: development/tools.md
+    - CI/CD Pipeline: development/ci-cd.md
+    - Docker Environment: development/docker.md

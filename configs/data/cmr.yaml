@@ -1,0 +1,41 @@
+_target_: src.data.pytorch.datamodules.cmr_datamodule.CMRDataModule
+
+defaults:
+  - default
+
+batch_size: 32
+augmentation_rate: 0.95
+live_loading: false
+
+cross_validation: false
+fold_number: null
+
+# Not done in eval dataset: https://github.com/oetu/MMCL-ECG-CMR/blob/bd3c18672de8e5fa73bb753613df94547bd6245b/mmcl/datasets/EvalImageDataset.py#L35
+# Not done in imaging contrastive dataset: https://github.com/oetu/MMCL-ECG-CMR/blob/main/mmcl/datasets/ContrastiveImageDataset.py
+manual_crop: null
+# Manual cropping parameters (relative to img_size)
+# This is not used for the finetuning as per https://github.com/oetu/MMCL-ECG-CMR/blob/bd3c18672de8e5fa73bb753613df94547bd6245b/mmcl/datasets/EvalImageDataset.py#L35 
+# This appears faulty to us.
+# manual_crop:
+#   top: 0.21
+#   left: 0.325
+#   height: 0.375
+#   width: 0.375
+
+img_size: 210
+
+# From Turgut et. al (2025):
+#   "The CMR images are augmented using
+#   horizontal flips (probability=0.5),
+#   rotations (probability=0.5, degrees=45),
+#   color jitter (brightness=0.5, contrast=0.5, saturation=0.25),
+#   random resized cropping (size=210, scale=(0.6, 1))."
+
+# Code ref eval: 
+# https://github.com/oetu/MMCL-ECG-CMR/blob/main/mmcl/datasets/EvalImageDataset.py#L11
+# leads to: https://github.com/oetu/MMCL-ECG-CMR/blob/bd3c18672de8e5fa73bb753613df94547bd6245b/mmcl/utils/utils.py#L70
+rotation_degrees: 45
+brightness: 0.5
+contrast: 0.5
+saturation: 0.25
+random_crop_scale: [0.6, 1.0]

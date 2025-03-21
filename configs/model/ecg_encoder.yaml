@@ -1,0 +1,25 @@
+_target_: src.models.ecg_encoder.ECGEncoder
+
+img_size:
+  - ${modality.input_channels}
+  - ${modality.input_electrodes}
+  - ${modality.time_steps}
+patch_size:
+  - 1
+  - 100
+
+# ViT Backbone
+# From Turgut et. al (2025): "with 3 layers and 6 heads that creates embeddings of size 384."
+embedding_dim: 384
+depth: 3
+num_heads: 6
+mlp_ratio: 4.0
+qkv_bias: true
+norm_layer:
+  _target_: torch.nn.LayerNorm
+  _partial_: true
+  eps: 1e-6
+
+# Encoder setting
+# From (Turgut et al., 2025, p. 5): "“We replace the global average pooling of fs(·) used during pre-training with the attention pooling described in [28].”
+global_pool: "attention_pool" # or "avg"
